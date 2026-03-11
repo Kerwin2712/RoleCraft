@@ -8,3 +8,4 @@
 7. **Simplicidad Funcional**: Si una función supera las 15 líneas de código, analízala y refactorízala creando funciones auxiliares para mantener la simplicidad.
 8. **Entorno Virtual**: Antes de ejecutar cualquier prueba o script, verifica y activa siempre el entorno virtual (`venv`). Prohibido usar el intérprete global.
 9. **Archivos Temporales**: Prohibido subir archivos de prueba temporales, logs o bases de datos locales (`.sqlite3`, `test_*.py` temporales, etc.). Deben borrarse o ignorarse siempre.
+10. **Bitácora de Cambios**: Antes de subir cambios al repositorio con git, se debe documentar el cambio en la carpeta `docs/bitacora/`, en un archivo nombrado según el mes y año (ej. `marzo_2026.md`), incluyendo fecha, hora y detalle de la modificación.
