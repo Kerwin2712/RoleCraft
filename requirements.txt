@@ -7,3 +7,4 @@ pydantic[email]
 flet
 httpx
 passlib[bcrypt]
+PyJWT

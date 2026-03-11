@@ -1,48 +1,57 @@
 import flet as ft
-import httpx
-
-API_URL = "http://127.0.0.1:8000"
+from frontend.views.login_view import LoginView
+from frontend.views.register_view import RegisterView
+from frontend.views.aprendiz_view import AprendizView
+from frontend.views.experto_view import ExpertoView
 
 def main(page: ft.Page) -> None:
-    """Punto de entrada principal de la vista de Flet."""
-    page.title = "RoleCraft Login"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-
-    username_field = ft.TextField(label="Usuario", autofocus=True)
-    password_field = ft.TextField(label="Contraseña", password=True, can_reveal_password=True)
-    msg_text = ft.Text(value="")
-
-    def handle_login(e: ft.ControlEvent) -> None:
-        """Manejador del evento de click en el botón."""
-        if not username_field.value or not password_field.value:
-            msg_text.value = "Ingresa usuario y contraseña"
-            page.update()
-            return
-        do_login(username_field.value, password_field.value, msg_text, page)
-
-    login_button = ft.ElevatedButton("Iniciar Sesión", on_click=handle_login)
+    """Enrutador principal de la aplicación."""
+    page.title = "RoleCraft"
+    page.theme_mode = ft.ThemeMode.DARK
+    session_data = {"token": None}
     
-    page.add(
-        ft.Row([
-            ft.Column([username_field, password_field, login_button, msg_text], 
-                        alignment=ft.MainAxisAlignment.CENTER)
-        ], alignment=ft.MainAxisAlignment.CENTER)
-    )
+    def on_login_success(token: str, role: str) -> None:
+        """Callback al iniciar sesión exitosamente."""
+        session_data["token"] = token
+        page.route = f"/{role}"
+        route_change(None)
+        
+    def on_register_success() -> None:
+        """Callback tras registrar aprendiz exitosamente."""
+        page.route = "/"
+        route_change(None)
+        
+    def on_logout() -> None:
+        """Callback al cerrar sesión."""
+        session_data["token"] = None
+        page.route = "/"
+        route_change(None)
 
-def do_login(username: str, password: str, msg_text: ft.Text, page: ft.Page) -> None:
-    """Realiza la petición HTTP al backend y actualiza la UI."""
-    try:
-        res = httpx.post(f"{API_URL}/login", json={"username": username, "password": password})
-        if res.status_code == 200:
-            msg_text.value = "¡Bienvenido a RoleCraft!"
-            msg_text.color = ft.colors.GREEN
-        else:
-            msg_text.value = "Error: Credenciales inválidas"
-            msg_text.color = ft.colors.RED
-    except httpx.RequestError:
-        msg_text.value = "Error conectando al servidor"
-        msg_text.color = ft.colors.RED
-    page.update()
+    def route_change(e) -> None:
+        """Manejador del cambio de rutas."""
+        page.controls.clear()
+        page.vertical_alignment = ft.MainAxisAlignment.CENTER
+        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        
+        token = session_data.get("token")
+        
+        if page.route == "/":
+            page.add(LoginView(page, on_login_success, lambda: navigate_to("/register")))
+        elif page.route == "/register":
+            page.add(RegisterView(page, on_register_success, lambda: navigate_to("/")))
+        elif page.route == "/aprendiz":
+            page.add(AprendizView(page, token, on_logout))
+        elif page.route == "/experto":
+            page.add(ExpertoView(page, token, on_logout))
+        page.update()
+
+    def navigate_to(route: str):
+        page.route = route
+        route_change(None)
+
+    page.on_route_change = route_change
+    page.route = "/"
+    route_change(None)
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    ft.run(main, view=ft.AppView.WEB_BROWSER)
