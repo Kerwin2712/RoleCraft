@@ -9,6 +9,8 @@ class Group(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)
     status = Column(String(50), default="En desarrollo")
+    phase = Column(Integer, default=1)
+    vacant_roles = Column(String(255), default="")
     
     users = relationship("User", back_populates="group")
 
@@ -21,6 +23,11 @@ class User(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     xp = Column(Integer, default=0)
+    skill_backend = Column(Integer, default=0)
+    skill_frontend = Column(Integer, default=0)
+    skill_git = Column(Integer, default=0)
+    skill_ia = Column(Integer, default=0)
+    skill_pm = Column(Integer, default=0)
     role = Column(String(50), default="aprendiz", nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
 

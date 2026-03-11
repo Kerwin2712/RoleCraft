@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoleCraft - Dashboard</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neonBlue: '#00f3ff',
+                        neonPurple: '#bc13fe',
+                        darkBg: '#0a0a0f',
+                        glassBg: 'rgba(20, 20, 30, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        body {
+            background-color: #0a0a0f;
+            color: #e2e8f0;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.15), transparent 25%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .neon-border {
+            border: 1px solid transparent;
+            background: linear-gradient(#14141e, #14141e) padding-box,
+                linear-gradient(45deg, #00f3ff, #bc13fe) border-box;
+        }
+
+        .text-neon {
+            background: -webkit-linear-gradient(45deg, #00f3ff, #bc13fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-gray-800">
+        <div class="text-2xl font-bold tracking-wider text-neon">ROLECRAFT</div>
+        <div>
+            {% if user %}
+            <span class="mr-4 text-gray-400">Logueado como: <span class="text-white">{{ user.username }}</span></span>
+            <a href="{{ url_for('logout') }}"
+                class="px-4 py-2 rounded-md bg-red-600/20 text-red-400 hover:bg-red-600/40 border border-red-500/30 transition-colors duration-300">Salir</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-6 flex justify-center items-start">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+
+</html>

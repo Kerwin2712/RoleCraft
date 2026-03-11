@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+
+    <!-- Sidebar: Perfil del Aprendiz -->
+    <div class="glass-panel w-full lg:w-1/3 p-6 rounded-2xl flex flex-col gap-6">
+        <div class="text-center">
+            <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neonBlue to-white">
+                {{ user.username }}
+            </h2>
+            <p class="text-gray-400 mt-1">Nivel: Aprendiz</p>
+        </div>
+
+        <div
+            class="bg-black/30 p-4 rounded-xl border border-gray-700/50 flex flex-col items-center justify-center relative shadow-[inset_0_0_20px_rgba(0,243,255,0.1)]">
+            <div class="text-3xl font-black text-neon">{{ user.xp }} XP</div>
+            <div class="text-sm text-gray-400 mt-1">Experiencia Total</div>
+            <div class="absolute -top-3 -right-3 text-2xl">🥇</div>
+        </div>
+
+        <div class="p-3 bg-neonBlue/10 border border-neonBlue/30 rounded-lg text-center">
+            <p class="text-sm text-gray-300">Grupo Actual</p>
+            <p class="text-lg font-bold text-white">
+                {% if user.group_id %}#{{ user.group_id }}{% else %}Ninguno{% endif %}
+            </p>
+        </div>
+
+        <div>
+            <h3 class="text-lg font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Matriz de Habilidades
+            </h3>
+
+            <div class="space-y-4">
+                <!-- Helper Macro para Barras -->
+                {% macro skill_bar(name, xp) %}
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-300">{{ name }}</span>
+                        <span class="text-neonBlue">{{ xp }} XP</span>
+                    </div>
+                    <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
+                        {% set percentage = xp if xp <= 100 else 100 %} {% set color='bg-neonPurple' %} {% if xp>= 50 %}
+                            {% set color = 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]' %}
+                            {% elif xp < 10 %} {% set color='bg-gray-500' %} {% else %} {% set
+                                color='bg-neonBlue shadow-[0_0_10px_rgba(0,243,255,0.8)]' %} {% endif %} <div
+                                class="h-2.5 rounded-full {{ color }} transition-all duration-1000 ease-out"
+                                style="width: {{ percentage }}%;">
+                    </div>
+                </div>
+            </div>
+            {% endmacro %}
+
+            {{ skill_bar('Backend (Python)', user.skill_backend) }}
+            {{ skill_bar('Frontend', user.skill_frontend) }}
+            {{ skill_bar('Git/DevOps', user.skill_git) }}
+            {{ skill_bar('IA Prompting', user.skill_ia) }}
+            {{ skill_bar('Liderazgo (PM)', user.skill_pm) }}
+
+        </div>
+    </div>
+</div>
+
+<!-- Main Content: Matchmaking -->
+<div class="w-full lg:w-2/3 flex flex-col gap-6">
+    <div class="glass-panel p-6 rounded-2xl flex justify-between items-center border-l-4 border-neonPurple">
+        <h2 class="text-2xl font-bold">Módulos de Misión <span
+                class="text-gray-500 text-lg font-normal ml-2">Matchmaking</span></h2>
+    </div>
+
+    <!-- Grid de Grupos -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for grupo in groups %}
+        {% include "components/group_card.html" %}
+        {% else %}
+        <div class="col-span-full glass-panel p-8 text-center rounded-2xl text-gray-400">
+            No hay grupos en fase de desarrollo disponibles en este momento.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</div>
+{% endblock %}

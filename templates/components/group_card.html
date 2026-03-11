@@ -1,0 +1,75 @@
+{% set roles = grupo.vacant_roles or "" %}
+{% set is_pm_required = 'PM' in roles or 'Liderazgo' in roles %}
+{% set is_locked = is_pm_required and user.skill_pm == 0 %}
+
+<div id="group-card-{{ grupo.id }}"
+    class="glass-panel rounded-2xl p-6 relative overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] hover:-translate-y-1 group">
+
+    <!-- Efecto decorativo -->
+    <div
+        class="absolute top-0 right-0 w-24 h-24 bg-neonPurple/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-neonBlue/20 transition-colors duration-500">
+    </div>
+
+    <div class="flex justify-between items-start mb-4 relative z-10">
+        <div>
+            <h3 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neonBlue to-white">
+                Proyecto Heredado #{{ grupo.id }}
+            </h3>
+            <span
+                class="px-2 py-1 bg-gray-800 text-xs rounded-md text-gray-300 border border-gray-700 mt-2 inline-block">
+                Fase {{ getattr(grupo, 'phase', 1) }}
+            </span>
+        </div>
+        <div class="text-xs text-neonBlue bg-neonBlue/10 px-2 py-1 rounded border border-neonBlue/30">
+            {{ grupo.status }}
+        </div>
+    </div>
+
+    <div class="space-y-2 mb-6 relative z-10">
+        <p class="text-sm text-gray-400">
+            <span class="font-semibold text-gray-300">Vacantes:</span>
+            {% if roles %}
+            <span class="text-yellow-400 ml-1">{{ roles }}</span>
+            {% else %}
+            <span class="text-green-400 ml-1">Abierto a todos</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Feedback div for HTMX responses -->
+    {% if error %}
+    <div class="text-xs text-red-400 bg-red-900/30 p-2 rounded mb-4 border border-red-500/50">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="mt-auto relative z-10">
+        {% if joined %}
+        <button disabled
+            class="w-full py-2 px-4 rounded-lg font-bold bg-green-500/20 text-green-400 border border-green-500/50 cursor-not-allowed">
+            ✓ Te has unido
+        </button>
+        {% elif user.group_id == grupo.id %}
+        <button disabled
+            class="w-full py-2 px-4 rounded-lg font-bold bg-neonBlue/20 text-neonBlue border border-neonBlue/50 cursor-not-allowed">
+            ✓ Tu grupo actual
+        </button>
+        {% elif is_locked %}
+        <button disabled
+            class="w-full py-2 px-4 rounded-lg font-bold bg-gray-800 text-gray-500 border border-gray-700 cursor-not-allowed flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                    clip-rule="evenodd" />
+            </svg>
+            Falta XP Liderazgo
+        </button>
+        {% else %}
+        <!-- HTMX Action Button -->
+        <button hx-post="/grupos/{{ grupo.id }}/unirse" hx-target="#group-card-{{ grupo.id }}" hx-swap="outerHTML"
+            class="w-full py-2 px-4 rounded-lg font-bold bg-transparent border border-neonPurple text-neonPurple hover:bg-neonPurple hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(188,19,254,0.2)] hover:shadow-[0_0_20px_rgba(188,19,254,0.6)]">
+            Unirse a Módulo
+        </button>
+        {% endif %}
+    </div>
+</div>

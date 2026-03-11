@@ -1,21 +1,22 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-# URL de conexión SQLite asíncrona
-DATABASE_URL = "sqlite+aiosqlite:///./rolecraft.sqlite3"
+# URL de conexión SQLite síncrona
+DATABASE_URL = "sqlite:///./rolecraft.sqlite3"
 
-# Instancia del motor de BD
-engine = create_async_engine(DATABASE_URL, echo=False)
+# Instancia del motor de BD síncrona, check_same_thread false for simple flask requests
+engine = create_engine(DATABASE_URL, echo=False, connect_args={"check_same_thread": False})
 
-# Creador de sesiones
-SessionLocal = async_sessionmaker(
-    bind=engine, class_=AsyncSession, expire_on_commit=False
-)
+# Creador de sesiones síncrono
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base para los modelos
 Base = declarative_base()
 
-async def get_db():
-    """Generador asíncrono para inyectar la sesión en FastAPI."""
-    async with SessionLocal() as session:
-        yield session
+def get_db():
+    """Generador para inyectar la sesión."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

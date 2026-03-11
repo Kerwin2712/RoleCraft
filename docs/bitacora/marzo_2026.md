@@ -19,3 +19,10 @@
 - Cambio de clases Flet desaprobadas (`ft.View` y `ft.alignment.center`) por contenedores puros (`ft.Container`, `ft.Column`).
 - Creada e integrada vista `RegisterView` con endpoint POST `/register` para inscripción de Aprendices.
 - Simplificación del código de Flet, delegando estructura de layout nativa a los ejes `MainAxisAlignment` y `CrossAxisAlignment`.
+
+## [11-03-2026 15:52:00] - Refactorización Estructural a Single Page App "Híbrida" (Flask + HTMX + Tailwind)
+- **Migración a Flask**: Eliminado todo el stack asíncrono (FastAPI y Flet local). Establecido `app.py` central conteniendo las reglas de direccionamiento, adaptando una arquitectura _Monolito Flexible_.
+- **Sincronización de Base de Datos**: Cambiada la conexión SQLite de `aiosqlite` genérico hacia el motor predeterminado y síncrono de _SQLAlchemy_, resolviendo bloqueos de hilos a través de context-managers (`with SessionLocal() as db`).
+- **Web Security**: Descartado formato Bearer explícitamente y transición a Tokens _JWT_ entregados y protegidos bajo _Cookies Seguras HTTP-Only_.
+- **Aesthetic Glassmorphism (UI)**: Renovación total a web tradicional mediante plantillas Jinja `/templates` potenciadas por **Tailwind CSS** para un aspecto oscuro _Neo-cyberpunk_ y destellos radiales/degradados. Funciones visuales estéticas programáticas en el nivel de XP en Barras.
+- **Micro-interactividad (HTMX)**: Recreada la funcionalidad de "Unirse" de la tarjeta de aprendiz hacia módulos empleando directrices como `<hx-post>` en el front validando los Skills del Aprendiz en tiempo real.

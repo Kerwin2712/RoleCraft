@@ -1,10 +1,5 @@
-fastapi
-uvicorn
-sqlalchemy
-aiosqlite
-pydantic
-pydantic[email]
-flet
-httpx
-passlib[bcrypt]
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
 PyJWT
+sqlalchemy

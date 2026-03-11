@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-panel w-full max-w-4xl p-8 rounded-2xl neon-border">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold mb-2">Panel del <span class="text-neonPurple">Experto</span></h1>
+        <p class="text-gray-400">Bienvenido, {{ user.username }}</p>
+    </div>
+
+    <div class="bg-blue-900/30 border border-blue-500/50 p-6 rounded-xl mb-6">
+        <h2 class="text-xl font-semibold text-blue-300 mb-2">Gestión de Grupos y Aprendices</h2>
+        <p class="text-gray-300">
+            Esta área será implementada próximamente para permitir a los Expertos coordinar el matchmaking,
+            crear nuevos "Proyectos Heredados" y asignar xp manualmente.
+        </p>
+    </div>
+</div>
+{% endblock %}
