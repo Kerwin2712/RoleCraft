@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full max-w-4xl">
+    <div class="glass-panel p-8 rounded-3xl border-l-4 border-[var(--accent-color)] mb-10 shadow-accent">
+        <h1 class="text-3xl font-black text-[var(--text-header)] uppercase tracking-tighter">Centro de Entrenamiento</h1>
+        <p class="text-muted mt-2">Completa las misiones iniciales para desbloquear tu potencial en la red.</p>
+    </div>
+
+    <!-- Timeline / Mission Map -->
+    <div class="relative">
+        <!-- Connecting Line -->
+        <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[var(--accent-color)] to-transparent opacity-20 hidden md:block"></div>
+
+        <div class="space-y-12">
+            {% for module in modules %}
+            <div class="relative flex flex-col md:flex-row items-start gap-8 group">
+                <!-- Node Indicator -->
+                <div class="z-10 w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-500
+                    {% if module.status == 'completed' %}
+                        bg-[var(--accent-color)] shadow-[0_0_20px_var(--accent-color)] text-[var(--bg-color)]
+                    {% elif module.status == 'available' %}
+                        bg-white/10 border-2 border-[var(--accent-color)] text-[var(--accent-color)] shadow-accent
+                    {% else %}
+                        bg-black/40 border border-white/5 text-gray-600 grayscale
+                    {% endif %}">
+                    {% if module.status == 'completed' %}
+                        <i class="fa-solid fa-check text-2xl"></i>
+                    {% elif module.status == 'available' %}
+                        <i class="fa-solid fa-play text-xl ml-1"></i>
+                    {% else %}
+                        <i class="fa-solid fa-lock text-xl"></i>
+                    {% endif %}
+                </div>
+
+                <!-- Module Card -->
+                <div class="flex-grow glass-panel p-6 rounded-2xl transition-all duration-300 relative overflow-hidden
+                    {% if module.status == 'locked' %} opacity-60 backdrop-blur-md {% else %} hover:translate-x-2 {% endif %}">
+                    
+                    {% if module.status == 'locked' %}
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-white/40">Acceso Restringido</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="flex justify-between items-start mb-2">
+                        <h2 class="text-xl font-bold text-[var(--text-header)]">{{ module.title }}</h2>
+                        <span class="text-xs font-black px-2 py-1 rounded bg-white/5 text-[var(--accent-color)]">+{{ module.xp }} XP</span>
+                    </div>
+                    
+                    <p class="text-muted text-sm leading-relaxed mb-6">{{ module.description }}</p>
+                    
+                    {% if module.status != 'locked' %}
+                    <a href="{{ url_for('view_module', module_id=module.id) }}" 
+                       class="inline-flex items-center gap-2 text-sm font-bold text-[var(--accent-color)] hover:text-[var(--secondary-color)] transition-colors">
+                        {% if module.status == 'completed' %}
+                            VOLVER A VER <i class="fa-solid fa-rotate-right"></i>
+                        {% else %}
+                            INICIAR MISIÓN <i class="fa-solid fa-chevron-right"></i>
+                        {% endif %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes floatXP {
+        0% { transform: translateY(0) scale(1); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+    }
+    .xp-float {
+        position: fixed;
+        color: var(--accent-color);
+        font-weight: 900;
+        pointer-events: none;
+        z-index: 9999;
+        animation: floatXP 2s ease-out forwards;
+    }
+</style>
+{% endblock %}

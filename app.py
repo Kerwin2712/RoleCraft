@@ -132,36 +132,123 @@ def dashboard(current_user):
                            roles_info=roles_data.get("roles", {}),
                            universal_skills=roles_data.get("universal_skills", []))
 
-@app.route("/grupos/<int:group_id>/unirse", methods=["POST"])
+@app.route("/entrenamiento")
 @token_required
-def join_group(current_user, group_id):
-    if current_user.role != "aprendiz":
-        return "No autorizado", 403
-        
+def training(current_user):
+    from backend.models import Module, UserModuleProgress
     with SessionLocal() as db:
-        group = db.execute(select(Group).where(Group.id == group_id)).scalars().first()
+        all_modules = db.query(Module).order_by(Module.id).all()
+        user_progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id).all()
         
-        if not group:
-            return "Grupo no encontrado", 404
+        # Build progress map
+        progress_map = {p.module_id: p.status for p in user_progress}
+        
+        modules_data = []
+        for m in all_modules:
+            status = progress_map.get(m.id, "locked")
             
-        roles = group.vacant_roles or ""
-        needs_pm = "PM" in roles or "Liderazgo" in roles
-        
-        has_pm_skill = current_user.skill_pm > 0
-        if needs_pm and not has_pm_skill:
-            db.expunge(group)
-            return render_template("components/group_card.html", grupo=group, user=current_user, error="Requiere habilidad de Liderazgo")
+            # Check if available (no prereq or prereq completed)
+            if status == "locked":
+                if not m.prerequisite_id or progress_map.get(m.prerequisite_id) == "completed":
+                    status = "available"
             
-        # Asignar
-        current_user_db = db.execute(select(User).where(User.id == current_user.id)).scalars().first()
-        current_user_db.group_id = group.id
-        db.commit()
+            modules_data.append({
+                "id": m.id,
+                "title": m.title,
+                "description": m.description,
+                "status": status,
+                "xp": m.xp_reward
+            })
+            
+    return render_template("entrenamiento.html", user=current_user, modules=modules_data)
+
+@app.route("/entrenamiento/<int:module_id>")
+@token_required
+def view_module(current_user, module_id):
+    from backend.models import Module, UserModuleProgress
+    with SessionLocal() as db:
+        module = db.query(Module).get(module_id)
+        if not module:
+            return redirect(url_for('training'))
         
-        # Actualizar la variable visual actual temporal
-        current_user.group_id = group.id
-        db.expunge(group)
+        # Check access
+        if module.prerequisite_id:
+            prereq = db.query(UserModuleProgress).filter_by(user_id=current_user.id, module_id=module.prerequisite_id, status="completed").first()
+            if not prereq:
+                return redirect(url_for('training'))
+                
+        progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id, module_id=module_id).first()
+        status = progress.status if progress else "available"
         
-    return render_template("components/group_card.html", grupo=group, user=current_user, joined=True)
+    return render_template("modulo_detalle.html", user=current_user, module=module, status=status)
+
+@app.route("/entrenamiento/verificar/<int:module_id>", methods=["POST"])
+@token_required
+def verify_module(current_user, module_id):
+    import requests
+    from backend.models import Module, UserModuleProgress
+    
+    answer = request.form.get("answer", "").strip()
+    
+    with SessionLocal() as db:
+        module = db.query(Module).get(module_id)
+        if not module:
+            return jsonify({"success": False, "message": "Módulo no encontrado"})
+            
+        success = False
+        message = ""
+        
+        # Validation Logic per Module
+        if module_id == 1: # Entorno
+            if "version" in answer.lower() and "--version" in answer:
+                success = True
+            else:
+                message = "Respuesta incorrecta. Pista: El comando incluye '--version'."
+                
+        elif module_id == 2: # Python
+            # Basic syntax check for a simple print or calculation
+            if "print" in answer or ("+" in answer or "*" in answer):
+                success = True
+            else:
+                message = "Error de Sintaxis o script inválido."
+                
+        elif module_id == 3: # Git/GitHub
+            # Verify GitHub user exists
+            try:
+                # In a real app, use environment variables for keys if needed, 
+                # but public profile check doesn't necessarily need one for low rate limit
+                res = requests.get(f"https://api.github.com/users/{answer}")
+                if res.status_code == 200:
+                    success = True
+                else:
+                    message = "Acceso Denegado: Usuario de GitHub no encontrado."
+            except:
+                message = "Fallo en la conexión con el servidor Git."
+                
+        elif module_id == 4: # Primer Repo
+            if "github.com/" in answer and len(answer) > 20:
+                success = True
+            else:
+                message = "URL de repositorio inválida o inaccesible."
+        
+        if success:
+            progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id, module_id=module_id).first()
+            if not progress:
+                progress = UserModuleProgress(user_id=current_user.id, module_id=module_id)
+                db.add(progress)
+            
+            if progress.status != "completed":
+                progress.status = "completed"
+                progress.completed_at = datetime.now().isoformat()
+                # Award XP
+                user_db = db.query(User).get(current_user.id)
+                user_db.xp += module.xp_reward
+                db.commit()
+                return jsonify({"success": True, "xp_gain": module.xp_reward})
+            else:
+                return jsonify({"success": True, "message": "Módulo ya completado previamente."})
+                
+        return jsonify({"success": False, "message": message})
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)

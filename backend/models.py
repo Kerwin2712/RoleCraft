@@ -14,6 +14,29 @@ class Group(Base):
     
     users = relationship("User", back_populates="group")
 
+class Module(Base):
+    """Modelo para los módulos de entrenamiento."""
+    __tablename__ = "modules"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(100), nullable=False)
+    description = Column(String(255), nullable=False)
+    video_url = Column(String(255), nullable=True)
+    xp_reward = Column(Integer, default=50)
+    prerequisite_id = Column(Integer, ForeignKey("modules.id"), nullable=True)
+
+    prerequisite = relationship("Module", remote_side=[id])
+
+class UserModuleProgress(Base):
+    """Rastreo de progreso de módulos por usuario."""
+    __tablename__ = "user_module_progress"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    module_id = Column(Integer, ForeignKey("modules.id"), nullable=False)
+    completed_at = Column(String(50), nullable=True) # ISO Format
+    status = Column(String(20), default="available") # locked, available, completed
+
 class User(Base):
     """Modelo de base de datos para los usuarios del sistema."""
     __tablename__ = "users"
@@ -38,6 +61,7 @@ class User(Base):
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
 
     group = relationship("Group", back_populates="users")
+    training_progress = relationship("UserModuleProgress", backref="user")
 
     @property
     def xp_multiplier(self):

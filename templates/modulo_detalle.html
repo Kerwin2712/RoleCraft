@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full max-w-6xl">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Izquierda: Video y Contenido -->
+        <div class="w-full lg:w-2/3 space-y-6">
+            <div class="glass-panel p-4 rounded-3xl overflow-hidden shadow-accent">
+                <div class="aspect-video bg-black rounded-2xl overflow-hidden relative">
+                    <iframe class="absolute inset-0 w-full h-full" 
+                            src="{{ module.video_url }}" 
+                            title="Video de Entrenamiento" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <div class="glass-panel p-8 rounded-3xl">
+                <h1 class="text-3xl font-black text-[var(--text-header)] mb-2 uppercase">{{ module.title }}</h1>
+                <p class="text-muted leading-relaxed">{{ module.description }}</p>
+                
+                <div class="mt-8 flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <div class="w-12 h-12 rounded-xl bg-[var(--accent-color)]/20 flex items-center justify-center text-[var(--accent-color)] text-xl">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-bold text-muted uppercase">Recompensa de Misión</div>
+                        <div class="text-xl font-black text-[var(--text-header)]">+{{ module.xp_reward }} XP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Derecha: Prueba de Valor -->
+        <div class="w-full lg:w-1/3">
+            <div class="glass-panel p-8 rounded-3xl sticky top-24 border-t-4 border-[var(--secondary-color)]">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-black/40 flex items-center justify-center text-[var(--secondary-color)]">
+                        <i class="fa-solid fa-terminal"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-[var(--text-header)]">Prueba de Valor</h3>
+                </div>
+
+                <div id="testArea">
+                    <p class="text-sm text-muted mb-6 leading-relaxed">
+                        {% if module.id == 1 %}
+                            Ingresa el comando que usarías en la terminal para verificar la versión instalada de una herramienta (según el video).
+                        {% elif module.id == 2 %}
+                            Escribe un pequeño script de Python que sume 5 + 5 o use la función 'print'.
+                        {% elif module.id == 3 %}
+                            Ingresa tu nombre de usuario exacto de GitHub para vincular tu perfil de aprendiz.
+                        {% elif module.id == 4 %}
+                            Pega la URL completa de tu repositorio público de RoleCraft.
+                        {% endif %}
+                    </p>
+
+                    <form id="verifyForm" class="space-y-4">
+                        <div class="relative">
+                            <textarea name="answer" id="answerInput" rows="4" 
+                                class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-[var(--accent-color)] font-mono focus:outline-none focus:border-[var(--accent-color)] transition-colors placeholder-white/20"
+                                placeholder="{{ 'Escribe tu script aquí...' if module.id == 2 else 'Tu respuesta...' }}"></textarea>
+                        </div>
+
+                        <button type="submit" id="submitBtn"
+                                class="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--accent-color)] to-[var(--secondary-color)] text-[var(--bg-color)] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-accent">
+                            ENVIAR PARA VERIFICACIÓN
+                        </button>
+                    </form>
+
+                    <div id="feedback" class="mt-6 hidden">
+                        <!-- Feedback area -->
+                    </div>
+                </div>
+
+                <div id="successArea" class="hidden text-center space-y-6">
+                    <div class="w-20 h-20 bg-[var(--accent-color)] rounded-full mx-auto flex items-center justify-center text-[var(--bg-color)] text-4xl shadow-accent">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div class="text-2xl font-black text-[var(--text-header)] uppercase">Misión Cumplida</div>
+                    <p class="text-muted text-sm italic">Tu acceso ha sido actualizado satisfactoriamente.</p>
+                    <a href="{{ url_for('training') }}" class="block w-full py-3 rounded-xl border border-[var(--accent-color)] text-[var(--accent-color)] font-bold text-sm">
+                        VOLVER AL MAPA
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('verifyForm');
+    const feedback = document.getElementById('feedback');
+    const testArea = document.getElementById('testArea');
+    const successArea = document.getElementById('successArea');
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const submitBtn = document.getElementById('submitBtn');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PROCESANDO...';
+
+        try {
+            const res = await fetch("{{ url_for('verify_module', module_id=module.id) }}", {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                // Animation for XP
+                if (data.xp_gain) {
+                    showXpAnimation(data.xp_gain);
+                }
+                
+                testArea.classList.add('hidden');
+                successArea.classList.remove('hidden');
+            } else {
+                feedback.classList.remove('hidden');
+                feedback.innerHTML = `
+                    <div class="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-xs font-mono">
+                        <div class="flex gap-2">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <div>
+                                <strong class="block uppercase mb-1">ACCESO DENEGADO</strong>
+                                ${data.message}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'ENVIAR PARA VERIFICACIÓN';
+        }
+    };
+
+    function showXpAnimation(amount) {
+        const div = document.createElement('div');
+        div.className = 'xp-float';
+        div.innerText = `+${amount} XP`;
+        div.style.left = '50%';
+        div.style.top = '50%';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2000);
+    }
+</script>
+{% endblock %}
