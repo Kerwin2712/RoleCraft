@@ -26,3 +26,10 @@
 - **Web Security**: Descartado formato Bearer explícitamente y transición a Tokens _JWT_ entregados y protegidos bajo _Cookies Seguras HTTP-Only_.
 - **Aesthetic Glassmorphism (UI)**: Renovación total a web tradicional mediante plantillas Jinja `/templates` potenciadas por **Tailwind CSS** para un aspecto oscuro _Neo-cyberpunk_ y destellos radiales/degradados. Funciones visuales estéticas programáticas en el nivel de XP en Barras.
 - **Micro-interactividad (HTMX)**: Recreada la funcionalidad de "Unirse" de la tarjeta de aprendiz hacia módulos empleando directrices como `<hx-post>` en el front validando los Skills del Aprendiz en tiempo real.
+
+## [12-03-2026 13:58:00] - Enriquecimiento del Dashboard y Lógica de Multiplicadores XP
+- **Sistema de Información Didáctica**: Integrados iconos de información neón y modales con efecto *glassmorphism* que detallan roles y requisitos.
+- **Habilidades de Supervivencia (Multiplicadores)**: Reestructurada la Matriz de Habilidades para separar habilidades Verticales (Especialidad) de Horizontales (Supervivencia).
+- **Lógica de Multiplicador**: Implementada propiedad `xp_multiplier` en el modelo `User`. Las habilidades horizontales (Git, IA, SQL) ahora actúan como multiplicadores globales.
+- **Mejoras en UI**: Nueva sección "Núcleo Técnico" y badges de "Rayo" en especialidades para indicar bonos activos.
+- **Soporte IDE**: Configuración de `settings.json` para ignorar falsos positivos de validación en plantillas Jinja2/HTML.
