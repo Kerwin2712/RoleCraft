@@ -5,9 +5,9 @@
     <div class="flex flex-col lg:flex-row gap-8">
         <!-- Izquierda: Video y Contenido -->
         <div class="w-full lg:w-2/3 space-y-6">
-            <div class="glass-panel p-4 rounded-3xl overflow-hidden shadow-accent">
-                <div class="aspect-video bg-black rounded-2xl overflow-hidden relative">
-                    <iframe class="absolute inset-0 w-full h-full" 
+            <div class="glass-panel p-2 rounded-3xl overflow-hidden shadow-accent border border-white/10">
+                <div class="aspect-video bg-black rounded-2xl overflow-hidden relative group">
+                    <iframe class="absolute inset-0 w-full h-full opacity-90 group-hover:opacity-100 transition-opacity" 
                             src="{{ module.video_url }}" 
                             title="Video de Entrenamiento" 
                             frameborder="0" 
@@ -16,10 +16,27 @@
                 </div>
             </div>
             
-            <div class="glass-panel p-8 rounded-3xl">
-                <h1 class="text-3xl font-black text-[var(--text-header)] mb-2 uppercase">{{ module.title }}</h1>
-                <p class="text-muted leading-relaxed">{{ module.description }}</p>
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <i class="fa-solid fa-graduation-cap text-6xl"></i>
+                </div>
+                <h1 class="text-3xl font-black text-[var(--text-header)] mb-2 uppercase tracking-tighter">{{ module.title }}</h1>
+                <p class="text-muted leading-relaxed mb-6">{{ module.description }}</p>
                 
+                <!-- Recursos Adicionales -->
+                <div class="flex flex-wrap gap-4 mt-6">
+                    {% if module.id == 2 %}
+                    <a href="https://learn.microsoft.com/en-us/windows/python/beginner" target="_blank" rel="noopener noreferrer" 
+                       class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-colors">
+                        <i class="fa-solid fa-book"></i> DOC: PYTHON ON WINDOWS
+                    </a>
+                    {% endif %}
+                    <a href="https://code.visualstudio.com/docs" target="_blank" rel="noopener noreferrer" 
+                       class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 transition-colors">
+                        <i class="fa-solid fa-up-right-from-square"></i> DOCUMENTACIÓN OFICIAL
+                    </a>
+                </div>
+
                 <div class="mt-8 flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10">
                     <div class="w-12 h-12 rounded-xl bg-[var(--accent-color)]/20 flex items-center justify-center text-[var(--accent-color)] text-xl">
                         <i class="fa-solid fa-gift"></i>

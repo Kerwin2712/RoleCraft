@@ -215,8 +215,6 @@ def verify_module(current_user, module_id):
         elif module_id == 3: # Git/GitHub
             # Verify GitHub user exists
             try:
-                # In a real app, use environment variables for keys if needed, 
-                # but public profile check doesn't necessarily need one for low rate limit
                 res = requests.get(f"https://api.github.com/users/{answer}")
                 if res.status_code == 200:
                     success = True

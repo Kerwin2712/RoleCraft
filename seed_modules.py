@@ -4,24 +4,22 @@ from backend.models import Module
 def seed_modules():
     db = SessionLocal()
     try:
-        # Check if already seeded
-        if db.query(Module).first():
-            print("Modules already exist. Skipping seed.")
-            return
-
+        # Clear existing modules to ensure fresh seed with new URLs
+        db.query(Module).delete()
+        
         m1 = Module(
-            title="Módulo 1: Entorno",
-            description="Configuración de VSCode y Antigravity para el desarrollo de misiones.",
-            video_url="https://www.youtube.com/embed/example1",
+            title="Módulo 1: Entorno de Trabajo",
+            description="Configuración profesional de VS Code y Antigravity para el desarrollo de misiones en Windows 10.",
+            video_url="https://www.youtube.com/embed/VqCgcpAypFQ",
             xp_reward=50
         )
         db.add(m1)
-        db.flush() # To get ID
+        db.flush()
 
         m2 = Module(
-            title="Módulo 2: Python Core",
-            description="Fundamentos de Python para automatización y backend.",
-            video_url="https://www.youtube.com/embed/example2",
+            title="Módulo 2: Instalación de Python",
+            description="Primeras líneas de código y ejecución de print('Hola Mundo') siguiendo los estándares de Microsoft.",
+            video_url="https://www.youtube.com/embed/8DvywoWv6fI",
             xp_reward=100,
             prerequisite_id=m1.id
         )
@@ -30,8 +28,8 @@ def seed_modules():
 
         m3 = Module(
             title="Módulo 3: Git & GitHub",
-            description="Control de versiones y colaboración en la red.",
-            video_url="https://www.youtube.com/embed/example3",
+            description="Instalación de Git, configuración de identidad y el corazón de la colaboración en la red.",
+            video_url="https://www.youtube.com/embed/hiT6yA8GvEc",
             xp_reward=75,
             prerequisite_id=m2.id
         )
@@ -39,16 +37,16 @@ def seed_modules():
         db.flush()
 
         m4 = Module(
-            title="Módulo 4: Primer Repo",
-            description="Despligue de tu primer repositorio público de RoleCraft.",
-            video_url="https://www.youtube.com/embed/example4",
+            title="Módulo 4: Mi Primer Repositorio",
+            description="Dominio de git init, add, commit y push para desplegar tu primer proyecto oficial.",
+            video_url="https://www.youtube.com/embed/3GymExBkK_s",
             xp_reward=150,
             prerequisite_id=m3.id
         )
         db.add(m4)
         
         db.commit()
-        print("Initial modules seeded successfully.")
+        print("Módulos oficiales actualizados y poblados con éxito.")
     except Exception as e:
         db.rollback()
         print(f"Error seeding modules: {e}")

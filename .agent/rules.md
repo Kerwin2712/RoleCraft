@@ -11,3 +11,4 @@
 10. **Entorno Virtual**: Antes de ejecutar cualquier prueba o script, verifica y activa siempre el entorno virtual (`.\env\Scripts\Activate.ps1`).
 11. **Archivos Temporales**: Prohibido subir archivos de prueba temporales, logs o bases de datos locales (`.sqlite3`, `test_*.py` temporales, etc.). Deben borrarse o ignorarse siempre en el repo.
 12. **Bitácora de Cambios**: Antes de subir cambios al repositorio con git, documenta el cambio en la carpeta `docs/bitacora/`, en un archivo nombrado según el mes y año, incluyendo fecha, hora y detalle de la modificación.
+13. **PROHIBICIÓN DE SUBIDA SIN PERMISO**: Queda terminantemente PROHIBIDO ejecutar `git push` o subir cambios al repositorio remoto sin una solicitud verbal EXPLÍCITA Y DIRECTA del usuario para esa acción específica.
