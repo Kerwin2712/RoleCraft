@@ -33,3 +33,10 @@
 - **Lógica de Multiplicador**: Implementada propiedad `xp_multiplier` en el modelo `User`. Las habilidades horizontales (Git, IA, SQL) ahora actúan como multiplicadores globales.
 - **Mejoras en UI**: Nueva sección "Núcleo Técnico" y badges de "Rayo" en especialidades para indicar bonos activos.
 - **Soporte IDE**: Configuración de `settings.json` para ignorar falsos positivos de validación en plantillas Jinja2/HTML.
+
+## [12-03-2026 14:15:00] - Motor de Temas Dinámicos y Variables CSS
+- **Arquitectura de Temas**: Migración total a variables CSS (`--bg-color`, `--accent-color`, etc.) en `base.html` para permitir personalización en tiempo real.
+- **Temas Base**: Implementación de 4 temas predefinidos: Futuristic (Dark), Light (Clean), Warm (Desert) y Cold (Polar).
+- **Interfaz de Selección**: Creado un Floating Action Button (FAB) con menú radial para cambiar temas y una paleta de micro-selección para el color de acento.
+- **Persistencia con LocalStorage**: La preferencia del usuario se guarda localmente, manteniendo el tema elegido tras el inicio de sesión o recarga de página.
+- **Micro-interactividad**: Añadida transición suave de 0.5s en cambios de tema y efectos de brillo dinámicos basados en el color de acento seleccionado.

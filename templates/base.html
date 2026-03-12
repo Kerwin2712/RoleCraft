@@ -27,32 +27,74 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
+        :root {
+            /* Futuristic (Default) */
+            --bg-color: #0a0a0f;
+            --card-bg: rgba(20, 20, 30, 0.6);
+            --text-main: #e2e8f0;
+            --accent-color: #00f3ff;
+            --secondary-color: #bc13fe;
+            --glow-effect: rgba(0, 243, 255, 0.15);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-light {
+            --bg-color: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #1e293b;
+            --accent-color: #3b82f6;
+            --secondary-color: #8b5cf6;
+            --glow-effect: rgba(59, 130, 246, 0.1);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-warm {
+            --bg-color: #1c1917;
+            --card-bg: rgba(41, 37, 36, 0.7);
+            --text-main: #f5f5f4;
+            --accent-color: #f97316;
+            --secondary-color: #78350f;
+            --glow-effect: rgba(249, 115, 22, 0.15);
+            --border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .theme-cold {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f1f5f9;
+            --accent-color: #22d3ee;
+            --secondary-color: #1e40af;
+            --glow-effect: rgba(34, 211, 238, 0.15);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
         body {
-            background-color: #0a0a0f;
-            color: #e2e8f0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             background-image:
-                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.15), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.15), transparent 25%);
+                radial-gradient(circle at 15% 50%, var(--glow-effect), transparent 25%),
+                radial-gradient(circle at 85% 30%, var(--glow-effect), transparent 25%);
             background-attachment: fixed;
             min-height: 100vh;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         .glass-panel {
-            background: rgba(20, 20, 30, 0.6);
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
         .neon-border {
             border: 1px solid transparent;
-            background: linear-gradient(#14141e, #14141e) padding-box,
-                linear-gradient(45deg, #00f3ff, #bc13fe) border-box;
+            background: linear-gradient(var(--bg-color), var(--bg-color)) padding-box,
+                linear-gradient(45deg, var(--accent-color), var(--secondary-color)) border-box;
         }
 
         .text-neon {
-            background: -webkit-linear-gradient(45deg, #00f3ff, #bc13fe);
+            background: -webkit-linear-gradient(45deg, var(--accent-color), var(--secondary-color));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -60,24 +102,89 @@
 
         /* Glassmorphism Modal */
         .modal-glass {
-            background: rgba(15, 15, 25, 0.8);
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 0 40px var(--glow-effect);
         }
 
         .neon-icon {
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.8);
-            color: #00f3ff;
+            text-shadow: 0 0 10px var(--accent-color);
+            color: var(--accent-color);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .neon-icon:hover {
             transform: scale(1.2);
-            text-shadow: 0 0 20px rgba(188, 19, 254, 1);
-            color: #bc13fe;
+            text-shadow: 0 0 20px var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        /* Floating Action Button */
+        #themeFAB {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .fab-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--accent-color);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .fab-btn:hover {
+            transform: scale(1.1) rotate(45deg);
+        }
+
+        .theme-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 200px;
+            padding: 1rem;
+            border-radius: 1rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .theme-option {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -100,6 +207,76 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Theme Selector FAB -->
+    <div id="themeFAB">
+        <div class="theme-menu glass-panel" id="themeMenu">
+            <div class="text-xs font-bold uppercase text-gray-500 mb-2 border-b border-gray-700/50 pb-1">Seleccionar Tema</div>
+            <div class="theme-option" onclick="applyTheme('futuristic')">
+                <div class="color-dot bg-[#00f3ff]"></div> Futuristic
+            </div>
+            <div class="theme-option" onclick="applyTheme('light')">
+                <div class="color-dot bg-[#3b82f6]"></div> Light Mode
+            </div>
+            <div class="theme-option" onclick="applyTheme('warm')">
+                <div class="color-dot bg-[#f97316]"></div> Desert Warm
+            </div>
+            <div class="theme-option" onclick="applyTheme('cold')">
+                <div class="color-dot bg-[#22d3ee]"></div> Polar Cold
+            </div>
+            <div class="text-xs font-bold uppercase text-gray-500 mt-4 mb-2 border-b border-gray-700/50 pb-1">Color de Acento</div>
+            <div class="flex gap-2 p-1">
+                <div class="w-6 h-6 rounded-full bg-red-500 cursor-pointer border border-white/20" onclick="setAccent('#ef4444')"></div>
+                <div class="w-6 h-6 rounded-full bg-green-500 cursor-pointer border border-white/20" onclick="setAccent('#22c55e')"></div>
+                <div class="w-6 h-6 rounded-full bg-yellow-500 cursor-pointer border border-white/20" onclick="setAccent('#eab308')"></div>
+                <div class="w-6 h-6 rounded-full bg-pink-500 cursor-pointer border border-white/20" onclick="setAccent('#ec4899')"></div>
+            </div>
+        </div>
+        <div class="fab-btn" onclick="toggleThemeMenu()">
+            <i class="fa-solid fa-palette text-xl"></i>
+        </div>
+    </div>
+
+    <script>
+        function toggleThemeMenu() {
+            const menu = document.getElementById('themeMenu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function applyTheme(theme) {
+            document.body.className = 'antialiased min-h-screen flex flex-col';
+            if (theme !== 'futuristic') {
+                document.body.classList.add('theme-' + theme);
+            }
+            localStorage.setItem('rolecraft-theme', theme);
+            // Reset accent when changing theme to avoid weird combos, or keep it? 
+            // Better to reset for consistency
+            document.documentElement.style.removeProperty('--accent-color');
+            localStorage.removeItem('rolecraft-accent');
+        }
+
+        function setAccent(color) {
+            document.documentElement.style.setProperty('--accent-color', color);
+            localStorage.setItem('rolecraft-accent', color);
+        }
+
+        // Load saved preferences
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('rolecraft-theme');
+            const savedAccent = localStorage.getItem('rolecraft-accent');
+            
+            if (savedTheme) applyTheme(savedTheme);
+            if (savedAccent) setAccent(savedAccent);
+        });
+
+        // Close menu when clicking outside
+        window.addEventListener('click', (e) => {
+            const fab = document.getElementById('themeFAB');
+            const menu = document.getElementById('themeMenu');
+            if (menu.style.display === 'flex' && !fab.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 
 </html>
