@@ -22,6 +22,8 @@
             }
         }
     </script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
@@ -54,6 +56,28 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        /* Glassmorphism Modal */
+        .modal-glass {
+            background: rgba(15, 15, 25, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.1);
+        }
+
+        .neon-icon {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.8);
+            color: #00f3ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .neon-icon:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 20px rgba(188, 19, 254, 1);
+            color: #bc13fe;
         }
     </style>
 </head>

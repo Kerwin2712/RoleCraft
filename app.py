@@ -110,6 +110,15 @@ def dashboard(current_user):
     if current_user.role == "experto":
         return render_template("dashboard_experto.html", user=current_user)
     
+    # Load role and skills info from JSON
+    import json
+    json_path = os.path.join(app.root_path, 'static', 'data', 'roles_info.json')
+    try:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            roles_data = json.load(f)
+    except Exception:
+        roles_data = {"roles": {}, "universal_skills": []}
+
     # Render Aprendiz
     with SessionLocal() as db:
         available_groups = db.execute(select(Group).where(Group.status == "En desarrollo")).scalars().all()
@@ -117,7 +126,11 @@ def dashboard(current_user):
         for g in available_groups:
             db.expunge(g)
             
-    return render_template("dashboard_aprendiz.html", user=current_user, groups=available_groups)
+    return render_template("dashboard_aprendiz.html", 
+                           user=current_user, 
+                           groups=available_groups, 
+                           roles_info=roles_data.get("roles", {}),
+                           universal_skills=roles_data.get("universal_skills", []))
 
 @app.route("/grupos/<int:group_id>/unirse", methods=["POST"])
 @token_required

@@ -30,54 +30,184 @@
             <h3 class="text-lg font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Matriz de Habilidades
             </h3>
 
-            <div class="space-y-4">
-                <!-- Helper Macro para Barras -->
-                {% macro skill_bar(name, xp) %}
+            <div class="space-y-6">
+                <!-- Sección: Especialidades (Verticales) -->
                 <div>
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="text-gray-300">{{ name }}</span>
-                        <span class="text-neonBlue">{{ xp }} XP</span>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex justify-between items-center">
+                        <span>Especialidad (Vertical)</span>
+                        <span class="text-[10px] bg-neonPurple/20 text-neonPurple px-2 py-0.5 rounded border border-neonPurple/30">Bonus Activo</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <!-- Helper Macro para Barras -->
+                        {% macro skill_bar(name, xp, role_key, is_vertical=True) %}
+                        <div>
+                            <div class="flex justify-between text-sm mb-1 items-center">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-gray-300">{{ name }}</span>
+                                    {% if role_key %}
+                                    <i class="fa-solid fa-circle-info neon-icon text-xs" 
+                                       onclick="openRoleModal('{{ role_key }}')"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    {% if is_vertical %}
+                                    <span class="text-[10px] font-bold text-yellow-400 flex items-center gap-0.5">
+                                        <i class="fa-solid fa-bolt text-[8px]"></i> x{{ user.xp_multiplier }}
+                                    </span>
+                                    {% endif %}
+                                    <span class="text-neonBlue">{{ xp }} XP</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
+                                {% set percentage = xp if xp <= 100 else 100 %}
+                                {% if is_vertical %}
+                                    {% set color = 'bg-neonPurple shadow-[0_0_10px_rgba(188,19,254,0.6)]' %}
+                                    {% if xp >= 80 %}{% set color = 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]' %}{% endif %}
+                                {% else %}
+                                    {% set color = 'bg-neonBlue shadow-[0_0_10px_rgba(0,243,255,0.6)]' %}
+                                {% endif %}
+                                <div class="h-2.5 rounded-full {{ color }} transition-all duration-1000 ease-out"
+                                     style="width: {{ percentage }}%;">
+                                </div>
+                            </div>
+                        </div>
+                        {% endmacro %}
+
+                        {{ skill_bar('Backend (Python)', user.skill_backend, 'backend') }}
+                        {{ skill_bar('Frontend', user.skill_frontend, 'frontend') }}
+                        {{ skill_bar('Liderazgo (PM)', user.skill_pm, 'pm') }}
                     </div>
-                    <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
-                        {% set percentage = xp if xp <= 100 else 100 %} {% set color='bg-neonPurple' %} {% if xp>= 50 %}
-                            {% set color = 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]' %}
-                            {% elif xp < 10 %} {% set color='bg-gray-500' %} {% else %} {% set
-                                color='bg-neonBlue shadow-[0_0_10px_rgba(0,243,255,0.8)]' %} {% endif %} <div
-                                class="h-2.5 rounded-full {{ color }} transition-all duration-1000 ease-out"
-                                style="width: {{ percentage }}%;">
+                </div>
+
+                <!-- Nueva Sección: Núcleo Técnico (Horizontales) -->
+                <div class="pt-6 border-t border-gray-700/50">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex justify-between items-center">
+                        <span>Núcleo Técnico (Horizontal)</span>
+                        <span class="text-[10px] text-neonBlue">Multiplicador Global</span>
+                    </h3>
+                    <div class="space-y-4">
+                        {{ skill_bar('Git & GitHub', user.skill_git, 'git', False) }}
+                        {{ skill_bar('IA Prompting', user.skill_ia, 'ia', False) }}
+                        {{ skill_bar('SQL Foundations', user.skill_sql, 'sql', False) }}
+                    </div>
+                </div>
+
+                <!-- Fundamentos Universales (Checklist rápido) -->
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-microchip text-neonBlue"></i> Habilidades Base
+                    </h3>
+                    <div class="grid grid-cols-1 gap-3">
+                        {% for skill in universal_skills %}
+                        <div class="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-neonBlue/50 transition-colors group">
+                            <div class="text-sm font-bold text-gray-200 group-hover:text-neonBlue">{{ skill.name }}</div>
+                            <p class="text-xs text-gray-500 mt-1 leading-tight">{{ skill.description }}</p>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-            {% endmacro %}
+        </div>
+    </div>
 
-            {{ skill_bar('Backend (Python)', user.skill_backend) }}
-            {{ skill_bar('Frontend', user.skill_frontend) }}
-            {{ skill_bar('Git/DevOps', user.skill_git) }}
-            {{ skill_bar('IA Prompting', user.skill_ia) }}
-            {{ skill_bar('Liderazgo (PM)', user.skill_pm) }}
+    <!-- Main Content: Matchmaking -->
+    <div class="w-full lg:w-2/3 flex flex-col gap-6">
+        <div class="glass-panel p-6 rounded-2xl flex justify-between items-center border-l-4 border-neonPurple">
+            <h2 class="text-2xl font-bold">Módulos de Misión <span
+                    class="text-gray-500 text-lg font-normal ml-2">Matchmaking</span></h2>
+        </div>
 
+        <!-- Grid de Grupos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for grupo in groups %}
+            {% include "components/group_card.html" %}
+            {% else %}
+            <div class="col-span-full glass-panel p-8 text-center rounded-2xl text-gray-400">
+                No hay grupos en fase de desarrollo disponibles en este momento.
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
 
-<!-- Main Content: Matchmaking -->
-<div class="w-full lg:w-2/3 flex flex-col gap-6">
-    <div class="glass-panel p-6 rounded-2xl flex justify-between items-center border-l-4 border-neonPurple">
-        <h2 class="text-2xl font-bold">Módulos de Misión <span
-                class="text-gray-500 text-lg font-normal ml-2">Matchmaking</span></h2>
-    </div>
-
-    <!-- Grid de Grupos -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {% for grupo in groups %}
-        {% include "components/group_card.html" %}
-        {% else %}
-        <div class="col-span-full glass-panel p-8 text-center rounded-2xl text-gray-400">
-            No hay grupos en fase de desarrollo disponibles en este momento.
+<!-- Modal de Rol (Dinámico) -->
+<div id="roleModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="modal-glass w-full max-w-lg rounded-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div class="p-6 border-b border-white/10 flex justify-between items-center">
+            <h3 id="modalTitle" class="text-2xl font-bold text-neonBlue">Título del Rol</h3>
+            <button onclick="closeRoleModal()" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
-        {% endfor %}
+        <div class="p-6 space-y-6">
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Descripción del Rol</h4>
+                <p id="modalDescription" class="text-gray-300 leading-relaxed"></p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-3 rounded-xl bg-neonBlue/5 border border-neonBlue/20">
+                    <h4 class="text-[10px] font-bold uppercase text-neonBlue mb-1">XP Requerido</h4>
+                    <p id="modalXP" class="text-lg font-black text-white"></p>
+                </div>
+                <div class="p-3 rounded-xl bg-neonPurple/5 border border-neonPurple/20">
+                    <h4 class="text-[10px] font-bold uppercase text-neonPurple mb-1">Hito Clave</h4>
+                    <p id="modalMilestone" class="text-xs font-medium text-white"></p>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Checklist de Maestría</h4>
+                <ul id="modalChecklist" class="space-y-2">
+                    <!-- Se llena dinámicamente -->
+                </ul>
+            </div>
+        </div>
+        <div class="p-4 bg-white/5 border-t border-white/10 text-center">
+            <button onclick="closeRoleModal()" class="px-6 py-2 rounded-full bg-gradient-to-r from-neonBlue/20 to-neonPurple/20 border border-white/10 text-sm font-bold hover:border-neonBlue/50 transition-all">
+                Entendido, Agente
+            </button>
+        </div>
     </div>
 </div>
 
-</div>
+<script>
+    // Usar safe filter para evitar errores de sintaxis si el JSON tiene caracteres especiales
+    const rolesInfo = {{ roles_info | tojson | safe }};
+
+    function openRoleModal(roleKey) {
+        const info = rolesInfo[roleKey];
+        if (!info) return;
+
+        document.getElementById('modalTitle').innerText = info.title;
+        document.getElementById('modalDescription').innerText = info.description;
+        document.getElementById('modalXP').innerText = `${info.requirements.xp} XP`;
+        document.getElementById('modalMilestone').innerText = info.requirements.milestone;
+
+        const checklistUl = document.getElementById('modalChecklist');
+        checklistUl.innerHTML = '';
+        info.checklist.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center gap-3 text-sm text-gray-300';
+            li.innerHTML = `<i class="fa-solid fa-square-check text-neonBlue/60"></i> <span>${item}</span>`;
+            checklistUl.appendChild(li);
+        });
+
+        document.getElementById('roleModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRoleModal() {
+        document.getElementById('roleModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar al hacer clic fuera del modal
+    window.onclick = function(event) {
+        const modal = document.getElementById('roleModal');
+        if (event.target == modal) {
+            closeRoleModal();
+        }
+    };
+</script>
 {% endblock %}

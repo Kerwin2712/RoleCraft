@@ -1,0 +1,88 @@
+{
+    "roles": {
+        "backend": {
+            "title": "Backend Developer",
+            "description": "Arquitecto de la lógica del servidor y gestión de datos. El pilar que sostiene la funcionalidad mediante APIs robustas y Clean Code.",
+            "requirements": {
+                "xp": 50,
+                "milestone": "Completar módulo de SQL & Data Foundations"
+            },
+            "checklist": [
+                "Implementación de principios SOLID",
+                "Manejo avanzado de SQLAlchemy/ORM",
+                "Creación de endpoints RESTful seguros",
+                "Pruebas unitarias con Pytest"
+            ]
+        },
+        "frontend": {
+            "title": "Frontend Developer",
+            "description": "Creador de experiencias visuales reactivas y minimalistas. Domina la interacción del usuario con un enfoque en UX y performance.",
+            "requirements": {
+                "xp": 40,
+                "milestone": "Aprobar evaluación de CSS Moderno & Tailwind"
+            },
+            "checklist": [
+                "Dominio de componentes reactivos",
+                "Diseño 'Mobile-First' y Responsive",
+                "Optimización de assets y carga",
+                "Integración fluida con APIs"
+            ]
+        },
+        "git": {
+            "title": "Git/DevOps Specialist",
+            "description": "Guardián de la integración continua y el despliegue. Asegura que el código fluya del desarrollo a producción sin fricciones.",
+            "requirements": {
+                "xp": 30,
+                "milestone": "Resolver 3 conflictos de fusión en PRs"
+            },
+            "checklist": [
+                "Estrategias de Branching (GitFlow)",
+                "Automatización con GitHub Actions",
+                "Manejo de contenedores (Docker)",
+                "Resolución experta de merge conflicts"
+            ]
+        },
+        "ia": {
+            "title": "IA Prompt Engineer",
+            "description": "Estratega del uso de modelos de lenguaje para potenciar el desarrollo. Maximiza la eficiencia mediante prompts técnicos rigurosos.",
+            "requirements": {
+                "xp": 25,
+                "milestone": "Documentar flujo de trabajo con copilot/gemini"
+            },
+            "checklist": [
+                "Estructuras Chain of Thought",
+                "Técnicas de Few-shot prompting",
+                "Refinamiento de contexto sistémico",
+                "Validación de outputs técnicos"
+            ]
+        },
+        "pm": {
+            "title": "Project Manager (Líder)",
+            "description": "Orquestador del talento humano y cumplimiento de hitos. Facilita la comunicación y remueve bloqueos en el flujo DRY.",
+            "requirements": {
+                "xp": 60,
+                "milestone": "Haber participado en 2 proyectos exitosos"
+            },
+            "checklist": [
+                "Gestión de Sprints en Kanban",
+                "Priorización mediante valor de negocio",
+                "Comunicación efectiva y asertiva",
+                "Mitigación de riesgos técnicos"
+            ]
+        }
+    },
+    "universal_skills": [
+        {
+            "name": "Git & GitHub",
+            "description": "Flujo de ramas y PRs. Dominar Git aumenta tu multiplicador de XP en un +0.1 por cada nivel, acelerando tu crecimiento en Backend y Frontend."
+        },
+        {
+            "name": "Environment Mastery (IA)",
+            "description": "Prompt Engineering y venv. Tu eficiencia con IA actúa como un catalizador técnico, otorgando un bono de velocidad de aprendizaje global."
+        },
+        {
+            "name": "SQL & Data Foundations",
+            "description": "Fundamentos de bases de datos. La estructura de datos sólida permite resolver misiones complejas más rápido, incrementando tu ganancia de XP."
+        }
+    ]
+}
