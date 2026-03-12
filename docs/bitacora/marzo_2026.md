@@ -34,9 +34,10 @@
 - **Mejoras en UI**: Nueva sección "Núcleo Técnico" y badges de "Rayo" en especialidades para indicar bonos activos.
 - **Soporte IDE**: Configuración de `settings.json` para ignorar falsos positivos de validación en plantillas Jinja2/HTML.
 
-## [12-03-2026 14:15:00] - Motor de Temas Dinámicos y Variables CSS
-- **Arquitectura de Temas**: Migración total a variables CSS (`--bg-color`, `--accent-color`, etc.) en `base.html` para permitir personalización en tiempo real.
-- **Temas Base**: Implementación de 4 temas predefinidos: Futuristic (Dark), Light (Clean), Warm (Desert) y Cold (Polar).
-- **Interfaz de Selección**: Creado un Floating Action Button (FAB) con menú radial para cambiar temas y una paleta de micro-selección para el color de acento.
-- **Persistencia con LocalStorage**: La preferencia del usuario se guarda localmente, manteniendo el tema elegido tras el inicio de sesión o recarga de página.
-- **Micro-interactividad**: Añadida transición suave de 0.5s en cambios de tema y efectos de brillo dinámicos basados en el color de acento seleccionado.
+## [12-03-2026 14:15:00] - Motor de Temas Dinámicos y Accesibilidad
+- **Arquitectura de Temas**: Migración total a variables CSS (`--bg-color`, `--accent-color`, `--text-header`, etc.) para personalización en tiempo real.
+- **Optimización de Accesibilidad**: 
+    - Implementación de `color-mix` para generar brillos y fondos translúcidos adaptativos.
+    - Sistema de Jerarquía de Texto: Introducción de `--text-header` y `--text-muted` para asegurar contraste en temas claros (negro pizarra) y oscuros.
+- **Temas Base**: Implementación de 4 temas (Futuristic, Light, Warm, Cold) con transiciones suaves de 0.5s.
+- **Interfaz de Selección**: Floating Action Button (FAB) con menú radial para temas y paleta de colores de acento con persistencia en `localStorage`.

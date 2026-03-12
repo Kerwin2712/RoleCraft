@@ -3,8 +3,8 @@
 {% block content %}
 <div class="glass-panel w-full max-w-md p-8 rounded-2xl neon-border mt-16">
     <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold mb-2">Ingresar a <span class="text-neon">RoleCraft</span></h1>
-        <p class="text-gray-400">Inicia sesión como Aprendiz o Experto</p>
+        <h1 class="text-3xl font-bold mb-2 text-[var(--text-header)]">Ingresar a <span class="text-neon">RoleCraft</span></h1>
+        <p class="text-muted">Inicia sesión como Aprendiz o Experto</p>
     </div>
 
     {% if error %}
@@ -21,7 +21,7 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label>
+            <label class="block text-sm font-medium text-muted mb-2">Contraseña</label>
             <input type="password" name="password" required
                 class="w-full bg-black/40 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[var(--secondary-color)] focus:ring-1 focus:ring-[var(--secondary-color)] transition-colors">
         </div>
@@ -32,9 +32,9 @@
         </button>
     </form>
 
-    <div class="mt-6 text-center text-gray-400 text-sm">
+    <div class="mt-6 text-center text-muted text-sm">
         ¿Aún no eres un Aprendiz?
-        <a href="{{ url_for('register') }}" class="text-neonBlue hover:text-neonPurple transition-colors">Regístrate
+        <a href="{{ url_for('register') }}" class="text-[var(--accent-color)] hover:text-[var(--secondary-color)] transition-colors font-bold">Regístrate
             aquí</a>
     </div>
 </div>

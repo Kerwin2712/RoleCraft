@@ -32,29 +32,32 @@
             --bg-color: #0a0a0f;
             --card-bg: rgba(20, 20, 30, 0.6);
             --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --text-header: #ffffff;
             --accent-color: #00f3ff;
             --secondary-color: #bc13fe;
-            --glow-effect: rgba(0, 243, 255, 0.15);
             --border-color: rgba(255, 255, 255, 0.1);
         }
 
         .theme-light {
-            --bg-color: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.8);
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.9);
             --text-main: #1e293b;
-            --accent-color: #3b82f6;
-            --secondary-color: #8b5cf6;
-            --glow-effect: rgba(59, 130, 246, 0.1);
-            --border-color: rgba(0, 0, 0, 0.1);
+            --text-muted: #475569;
+            --text-header: #0f172a;
+            --accent-color: #2563eb;
+            --secondary-color: #7c3aed;
+            --border-color: rgba(0, 0, 0, 0.15);
         }
 
         .theme-warm {
             --bg-color: #1c1917;
             --card-bg: rgba(41, 37, 36, 0.7);
             --text-main: #f5f5f4;
+            --text-muted: #a8a29e;
+            --text-header: #ffffff;
             --accent-color: #f97316;
             --secondary-color: #78350f;
-            --glow-effect: rgba(249, 115, 22, 0.15);
             --border-color: rgba(255, 255, 255, 0.05);
         }
 
@@ -62,10 +65,21 @@
             --bg-color: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
             --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --text-header: #ffffff;
             --accent-color: #22d3ee;
             --secondary-color: #1e40af;
-            --glow-effect: rgba(34, 211, 238, 0.15);
             --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Automagic glow and soft colors using color-mix */
+        :root, body {
+            --glow-effect: color-mix(in srgb, var(--accent-color), transparent 85%);
+            --accent-soft: color-mix(in srgb, var(--accent-color), transparent 90%);
+            --accent-border: color-mix(in srgb, var(--accent-color), transparent 70%);
+            --secondary-glow: color-mix(in srgb, var(--secondary-color), transparent 40%);
+            --secondary-soft: color-mix(in srgb, var(--secondary-color), transparent 90%);
+            --secondary-border: color-mix(in srgb, var(--secondary-color), transparent 70%);
         }
 
         body {
@@ -121,6 +135,18 @@
             text-shadow: 0 0 20px var(--secondary-color);
             color: var(--secondary-color);
         }
+
+        /* Special dynamic utilities */
+        .bg-accent-soft { background-color: var(--accent-soft) !important; }
+        .border-accent-soft { border-color: var(--accent-border) !important; }
+        .bg-secondary-soft { background-color: var(--secondary-soft) !important; }
+        .border-secondary-soft { border-color: var(--secondary-border) !important; }
+        .shadow-accent { box-shadow: 0 0 15px var(--glow-effect); }
+        .shadow-secondary { box-shadow: 0 0 10px var(--secondary-glow); }
+
+        .text-muted { color: var(--text-muted) !important; }
+
+        /* Floating Action Button */
 
         /* Floating Action Button */
         #themeFAB {
@@ -195,7 +221,7 @@
         <div class="text-2xl font-bold tracking-wider text-neon">ROLECRAFT</div>
         <div>
             {% if user %}
-            <span class="mr-4 text-gray-400">Logueado como: <span class="text-white">{{ user.username }}</span></span>
+            <span class="text-muted">Logueado como: <span class="text-[var(--text-header)] font-bold">{{ user.username }}</span></span>
             <a href="{{ url_for('logout') }}"
                 class="px-4 py-2 rounded-md bg-red-600/20 text-red-400 hover:bg-red-600/40 border border-red-500/30 transition-colors duration-300">Salir</a>
             {% endif %}
@@ -248,23 +274,26 @@
                 document.body.classList.add('theme-' + theme);
             }
             localStorage.setItem('rolecraft-theme', theme);
-            // Reset accent when changing theme to avoid weird combos, or keep it? 
-            // Better to reset for consistency
-            document.documentElement.style.removeProperty('--accent-color');
-            localStorage.removeItem('rolecraft-accent');
+            
+            // Re-apply current accent if it exists, to override the theme default
+            const savedAccent = localStorage.getItem('rolecraft-accent');
+            if (savedAccent) {
+                setAccent(savedAccent);
+            }
         }
 
         function setAccent(color) {
-            document.documentElement.style.setProperty('--accent-color', color);
+            document.body.style.setProperty('--accent-color', color);
+            // Also update glow effect to match if possible, or just keep accent
             localStorage.setItem('rolecraft-accent', color);
         }
 
         // Load saved preferences
         window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('rolecraft-theme');
+            const savedTheme = localStorage.getItem('rolecraft-theme') || 'futuristic';
             const savedAccent = localStorage.getItem('rolecraft-accent');
             
-            if (savedTheme) applyTheme(savedTheme);
+            applyTheme(savedTheme);
             if (savedAccent) setAccent(savedAccent);
         });
 

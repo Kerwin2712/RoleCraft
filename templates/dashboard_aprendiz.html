@@ -9,33 +9,33 @@
             <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent-color)] to-[var(--text-main)]">
                 {{ user.username }}
             </h2>
-            <p class="text-gray-400 mt-1">Nivel: Aprendiz</p>
+            <p class="text-muted mt-1">Nivel: Aprendiz</p>
         </div>
 
         <div
             class="bg-black/30 p-4 rounded-xl border border-[var(--border-color)] flex flex-col items-center justify-center relative shadow-[inset_0_0_20px_var(--glow-effect)]">
             <div class="text-3xl font-black text-neon">{{ user.xp }} XP</div>
-            <div class="text-sm text-gray-400 mt-1">Experiencia Total</div>
+            <div class="text-sm text-muted mt-1">Experiencia Total</div>
             <div class="absolute -top-3 -right-3 text-2xl">🥇</div>
         </div>
 
-        <div class="p-3 bg-[var(--accent-color)]/10 border border-[var(--accent-color)]/30 rounded-lg text-center">
+        <div class="p-3 bg-accent-soft border border-accent-soft rounded-lg text-center">
             <p class="text-sm text-gray-300">Grupo Actual</p>
-            <p class="text-lg font-bold text-white">
+            <p class="text-lg font-bold text-[var(--text-header)]">
                 {% if user.group_id %}#{{ user.group_id }}{% else %}Ninguno{% endif %}
             </p>
         </div>
 
         <div>
-            <h3 class="text-lg font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Matriz de Habilidades
+            <h3 class="text-lg font-semibold text-[var(--text-header)] mb-4 border-b border-[var(--border-color)] pb-2">Matriz de Habilidades
             </h3>
 
             <div class="space-y-6">
                 <!-- Sección: Especialidades (Verticales) -->
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex justify-between items-center">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted mb-4 flex justify-between items-center">
                         <span>Especialidad (Vertical)</span>
-                        <span class="text-[10px] bg-neonPurple/20 text-neonPurple px-2 py-0.5 rounded border border-neonPurple/30">Bonus Activo</span>
+                        <span class="text-[10px] bg-[var(--secondary-color)]/20 text-[var(--secondary-color)] px-2 py-0.5 rounded border border-[var(--secondary-color)]/30">Bonus Activo</span>
                     </h3>
                     <div class="space-y-4">
                         <!-- Helper Macro para Barras -->
@@ -43,7 +43,7 @@
                         <div>
                             <div class="flex justify-between text-sm mb-1 items-center">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-gray-300">{{ name }}</span>
+                                    <span class="text-[var(--text-main)] opacity-90">{{ name }}</span>
                                     {% if role_key %}
                                     <i class="fa-solid fa-circle-info neon-icon text-xs" 
                                        onclick="openRoleModal('{{ role_key }}')"></i>
@@ -61,10 +61,10 @@
                             <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden">
                                 {% set percentage = xp if xp <= 100 else 100 %}
                                 {% if is_vertical %}
-                                    {% set color = 'bg-[var(--secondary-color)] shadow-[0_0_10px_var(--secondary-color)]/60' %}
+                                    {% set color = 'bg-[var(--secondary-color)] shadow-secondary' %}
                                     {% if xp >= 80 %}{% set color = 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]' %}{% endif %}
                                 {% else %}
-                                    {% set color = 'bg-[var(--accent-color)] shadow-[0_0_10px_var(--accent-color)]/60' %}
+                                    {% set color = 'bg-[var(--accent-color)] shadow-accent' %}
                                 {% endif %}
                                 <div class="h-2.5 rounded-full {{ color }} transition-all duration-1000 ease-out"
                                      style="width: {{ percentage }}%;">
@@ -81,9 +81,9 @@
 
                 <!-- Nueva Sección: Núcleo Técnico (Horizontales) -->
                 <div class="pt-6 border-t border-gray-700/50">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex justify-between items-center">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted mb-4 flex justify-between items-center">
                         <span>Núcleo Técnico (Horizontal)</span>
-                        <span class="text-[10px] text-neonBlue">Multiplicador Global</span>
+                        <span class="text-[10px] text-[var(--accent-color)]">Multiplicador Global</span>
                     </h3>
                     <div class="space-y-4">
                         {{ skill_bar('Git & GitHub', user.skill_git, 'git', False) }}
@@ -93,15 +93,15 @@
                 </div>
 
                 <!-- Fundamentos Universales (Checklist rápido) -->
-                <div class="mt-8 pt-6 border-t border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-200 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-microchip text-neonBlue"></i> Habilidades Base
+                <div class="mt-8 pt-6 border-t border-[var(--border-color)]">
+                    <h3 class="text-lg font-semibold text-[var(--text-header)] mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-microchip text-[var(--accent-color)]"></i> Habilidades Base
                     </h3>
                     <div class="grid grid-cols-1 gap-3">
                         {% for skill in universal_skills %}
-                        <div class="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-neonBlue/50 transition-colors group">
-                            <div class="text-sm font-bold text-gray-200 group-hover:text-neonBlue">{{ skill.name }}</div>
-                            <p class="text-xs text-gray-500 mt-1 leading-tight">{{ skill.description }}</p>
+                        <div class="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--accent-color)]/50 transition-colors group">
+                            <div class="text-sm font-bold text-[var(--text-main)] group-hover:text-[var(--accent-color)]">{{ skill.name }}</div>
+                            <p class="text-xs text-muted mt-1 leading-tight">{{ skill.description }}</p>
                         </div>
                         {% endfor %}
                     </div>
@@ -114,7 +114,7 @@
     <div class="w-full lg:w-2/3 flex flex-col gap-6">
         <div class="glass-panel p-6 rounded-2xl flex justify-between items-center border-l-4 border-[var(--secondary-color)]">
             <h2 class="text-2xl font-bold">Módulos de Misión <span
-                    class="text-gray-500 text-lg font-normal ml-2">Matchmaking</span></h2>
+                    class="text-muted text-lg font-normal ml-2">Matchmaking</span></h2>
         </div>
 
         <!-- Grid de Grupos -->
@@ -141,23 +141,23 @@
         </div>
         <div class="p-6 space-y-6">
             <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Descripción del Rol</h4>
-                <p id="modalDescription" class="text-gray-300 leading-relaxed"></p>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-muted mb-2">Descripción del Rol</h4>
+                <p id="modalDescription" class="text-[var(--text-main)] opacity-90 leading-relaxed"></p>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
-                <div class="p-3 rounded-xl bg-neonBlue/5 border border-neonBlue/20">
-                    <h4 class="text-[10px] font-bold uppercase text-neonBlue mb-1">XP Requerido</h4>
-                    <p id="modalXP" class="text-lg font-black text-white"></p>
+                <div class="p-3 rounded-xl bg-accent-soft border border-accent-soft">
+                    <h4 class="text-[10px] font-bold uppercase text-[var(--accent-color)] mb-1">XP Requerido</h4>
+                    <p id="modalXP" class="text-lg font-black text-[var(--text-header)]"></p>
                 </div>
-                <div class="p-3 rounded-xl bg-neonPurple/5 border border-neonPurple/20">
-                    <h4 class="text-[10px] font-bold uppercase text-neonPurple mb-1">Hito Clave</h4>
-                    <p id="modalMilestone" class="text-xs font-medium text-white"></p>
+                <div class="p-3 rounded-xl bg-secondary-soft border border-secondary-soft">
+                    <h4 class="text-[10px] font-bold uppercase text-[var(--secondary-color)] mb-1">Hito Clave</h4>
+                    <p id="modalMilestone" class="text-xs font-medium text-[var(--text-header)]"></p>
                 </div>
             </div>
 
             <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Checklist de Maestría</h4>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-muted mb-3">Checklist de Maestría</h4>
                 <ul id="modalChecklist" class="space-y-2">
                     <!-- Se llena dinámicamente -->
                 </ul>
