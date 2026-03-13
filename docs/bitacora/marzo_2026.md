@@ -41,3 +41,11 @@
     - Sistema de Jerarquía de Texto: Introducción de `--text-header` y `--text-muted` para asegurar contraste en temas claros (negro pizarra) y oscuros.
 - **Temas Base**: Implementación de 4 temas (Futuristic, Light, Warm, Cold) con transiciones suaves de 0.5s.
 - **Interfaz de Selección**: Floating Action Button (FAB) con menú radial para temas y paleta de colores de acento con persistencia en `localStorage`.
+
+## [12-03-2026 19:30:00] - Despliegue Oficial del Sistema de Onboarding
+- **Recursos Oficiales**: Integración de videos de entrenamiento de VS Code (Official), Microsoft Developer, HolaMundo y Midudev.
+- **UI de Misión**: Rediseño de la vista de módulo con iframes estilizados mediante Glassmorphism y sombras neón.
+- **Seguridad y Reglas**: 
+    - Implementación de la **Regla #13** en `.agent/rules.md` para control de despliegue manual.
+    - Añadidos enlaces externos seguros con `target="_blank"` y `rel="noopener noreferrer"`.
+- **Backend Reforzado**: Corrección de dependencias (`requests`) y optimización de la lógica de validación técnica local.
