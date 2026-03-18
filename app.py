@@ -131,11 +131,40 @@ def dashboard(current_user):
         for g in available_groups:
             db.expunge(g)
             
+        # Cargar datos de entrenamiento
+        user_db = db.query(User).get(current_user.id)
+        all_modules = db.query(Module).order_by(Module.id).all()
+        user_progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id).all()
+        
+        progress_map = {p.module_id: p.status for p in user_progress}
+        
+        modules_data = []
+        for m in all_modules:
+            status = progress_map.get(m.id, "locked")
+            
+            # Requisito especial para Módulo 2 (Git)
+            if m.id == 3 and user_db.xp < MIN_XP_FOR_GIT:
+                status = "locked"
+            elif status == "locked":
+                if not m.prerequisite_id or progress_map.get(m.prerequisite_id) == "completed":
+                    status = "available"
+            
+            modules_data.append({
+                "id": m.id,
+                "title": m.title,
+                "description": m.description,
+                "status": status,
+                "xp": m.xp_reward,
+                "locked_by_xp": m.id == 3 and user_db.xp < MIN_XP_FOR_GIT
+            })
+            
     return render_template("dashboard_aprendiz.html", 
                            user=current_user, 
                            groups=available_groups, 
                            roles_info=roles_data.get("roles", {}),
-                           universal_skills=roles_data.get("universal_skills", []))
+                           universal_skills=roles_data.get("universal_skills", []),
+                           modules=modules_data,
+                           min_xp_git=MIN_XP_FOR_GIT)
 
 import json
 import csv
