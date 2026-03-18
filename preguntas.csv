@@ -1,0 +1,27 @@
+Modulo,Dificultad,Tema,Pregunta,OpA,OpB,OpC,OpD,OpE,OpF,Correcta,XP
+0,Facil,Variables,"a = 5\nb = '5'\n\nresultado = type(a) == type(b)\nprint(resultado)",True,False,Error TypeError,None,"<class 'bool'>","<class 'int'>",B,10
+0,Facil,Operadores,"# Calculando módulo\nresultado = 10 % 3\nprint(resultado)",3,1,0.333,10,0,"TypeError: unsupported operand type(s)",B,10
+0,Facil,Listas,"L = ['🍎', '🍌', '🍒', '🍉']\n\n# Obtener la sandía\nfruta = L[-1]\nprint(fruta)","'🍎'","'🍌'","'🍉'","'🍒'",Error IndexError,L[last],C,15
+0,Facil,Diccionarios,"d = {'x': 10, 'y': 20}\n\nvalor = d['x']\nprint(valor)","d.x",10,Error KeyError,20,None,"{'x': 10}",B,15
+0,Media,Loops,"for i in range(5):\n    if i == 2:\n        continue\n    print(i, end='')","01234","0134","34","01","Error SyntaxError",None,B,20
+0,Media,Funciones,"def saludar(nombre):\n    mensaje = f""Hola, {nombre}""\n    # Falta return\n\nresultado = saludar(""Kerwin"")\nprint(resultado)",None,"""Hola, Kerwin""",Error SyntaxError,0,False,Undefined,A,20
+0,Media,Variables,"x = 10\n\ndef modificar():\n    global x\n    x = 20\n\nmodificar()\nprint(x)",10,20,Error UnboundLocalError,None,0,"global 10",B,20
+0,Media,Listas,"L = [10, 20, 30, 20]\nL.remove(20)\n\nprint(L)","[10, 30, 20]","[10, 30]","[10, 20, 30]","[]",Error ValueError,"[20, 30, 20]",A,25
+0,Media,Operadores,"a = [1, 2, 3]\nb = [1, 2, 3]\n\n# is evalúa identidad, == evalúa valor\nprint(a is b)",True,False,Error TypeError,"[1, 2, 3]",1,None,B,25
+0,Media,Excepciones,"try:\n    resultado = 10 / 0\nexcept ZeroDivisionError:\n    print('A')\nfinally:\n    print('B')","A","B","A\nB",Error ZeroDivisionError,Ninguna salida,None,C,25
+0,Dificil,Funciones,"def multiplicar(a, b=2):\n    return a * b\n\nprint(multiplicar(5))",10,Error TypeError,7,25,None,5,A,35
+0,Dificil,POO,"class Animal:\n    def __init__(self, nombre):\n        self.nombre = nombre\n\nperro = Animal(""Firulais"")\nprint(perro.nombre)","Animal",Error AttributeError,"Firulais","nombre",None,self.nombre,C,35
+0,Dificil,POO,"class Persona:\n    especie = ""Humano"" # Atributo de clase\n\np1 = Persona()\np2 = Persona()\nPersona.especie = ""Cyborg""\n\nprint(p1.especie)","""Humano""","""Cyborg""",Error AttributeError,None,"Persona.especie","""Humano Cyborg""",B,35
+0,Dificil,Funciones,"def suma(*args):\n    return sum(args)\n\nprint(suma(1, 2, 3, 4))",Error TypeError,"[1, 2, 3, 4]",10,"(1, 2, 3, 4)",None,"<function sum at ...>",C,40
+0,Dificil,Decoradores,"def mayusculas(func):\n    def wrapper():\n        return func().upper()\n    return wrapper\n\n@mayusculas\ndef saludar():\n    return ""hola""\n\nprint(saludar())","""hola""","""HOLA""",Error NameError,"<function wrapper at ...>",None,"<function saludar at ...>",B,40
+0,Dificil,Listas,"cuadrados = [x**2 for x in range(4)]\nprint(cuadrados)","[1, 4, 9, 16]","[0, 1, 4, 9]","[0, 2, 4, 6]","(0, 1, 4, 9)",Error SyntaxError,None,B,40
+0,Dificil,POO,"class A:\n    def hablar(self): return ""A""\nclass B(A):\n    def hablar(self): return ""B""\nclass C(A):\n    def hablar(self): return ""C""\nclass D(B, C):\n    pass\n\n# MRO (Method Resolution Order)\nd = D()\nprint(d.hablar())","""A""","""B""","""C""",Error TypeError,"""D""",None,B,45
+0,Dificil,Operadores,"# Operación de potencia\nresultado = 2 ** 3\nprint(resultado)",6,8,5,"2.3",None,Error SyntaxError,B,20
+0,Dificil,POO,"class Base:\n    def __init__(self):\n        print(""Base"")\n\nclass Derivada(Base):\n    def __init__(self):\n        super().__init__()\n        print(""Derivada"")\n\nd = Derivada()","Solo ""Base""","Solo ""Derivada""","""Base""\n""Derivada""","""Derivada""\n""Base""",Error TypeError,None,C,50
+0,Dificil,Excepciones,"raise ValueError(""Mensaje de error personalizado"")\n# ¿Qué tipo de excepción se lanza?","TypeError","ValueError","RuntimeError","Exception","SyntaxError",None,B,50
+1,Facil,Sintaxis,"¿Cómo se comenta una línea en Python?",//,#,/**/,--,rem,!,B,10
+1,Facil,Variables,"¿Cuál es el operador de asignación?",==,=,:,<=,->,set,B,10
+1,Facil,Tipos,"¿Qué devuelve type(10)?",str,float,int,list,dict,bool,C,10
+1,Media,Listas,"¿Cómo agregas un elemento al final de una lista?",add(),push(),append(),insert(),extend(),join(),C,20
+1,Media,Condicionales,"¿Cuál es la palabra clave para 'si no'?",else,elseif,elif,otherwise,except,then,C,20
+1,Dificil,Funciones,"¿Cómo se define una función?",func,def,function,define,lambda,method,B,30

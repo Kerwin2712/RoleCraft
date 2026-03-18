@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
 from sqlalchemy.orm import relationship
 from backend.database import Base
+from datetime import datetime
 
 class Group(Base):
     """Modelo para representar los grupos de aprendices."""
@@ -36,6 +37,10 @@ class UserModuleProgress(Base):
     module_id = Column(Integer, ForeignKey("modules.id"), nullable=False)
     completed_at = Column(String(50), nullable=True) # ISO Format
     status = Column(String(20), default="available") # locked, available, completed
+    
+    # Nuevo: Lógica de evaluación circular
+    evaluation_queue = Column(Text, nullable=True) # JSON String de IDs de preguntas
+    current_streak = Column(Integer, default=0)
 
 class User(Base):
     """Modelo de base de datos para los usuarios del sistema."""
@@ -59,6 +64,15 @@ class User(Base):
     
     role = Column(String(50), default="aprendiz", nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
+
+    # Nuevo: Economía Virtual e Inflexión
+    coins = Column(Integer, default=0)
+    question_stock = Column(Integer, default=20)
+    last_stock_recharge = Column(DateTime, default=datetime.now)
+    
+    # Fase de Diagnóstico e Inflexión
+    is_polyglot = Column(Integer, nullable=True) # Usamos Integer como bool (0/1)
+    last_exam_attempt = Column(DateTime, nullable=True)
 
     group = relationship("Group", back_populates="users")
     training_progress = relationship("UserModuleProgress", backref="user")

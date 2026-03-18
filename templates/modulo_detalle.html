@@ -120,7 +120,7 @@
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PROCESANDO...';
 
         try {
-            const res = await fetch("{{ url_for('verify_module', module_id=module.id) }}", {
+            const res = await fetch("{{ url_for('verify_answer', module_id=module.id) }}", {
                 method: 'POST',
                 body: formData
             });

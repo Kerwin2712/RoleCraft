@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Fonts para código con ligaduras -->
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    /* IDE Specific Font & Ligatures */
+    .ide-font { 
+        font-family: 'Fira Code', 'JetBrains Mono', monospace; 
+        font-variant-ligatures: normal; 
+    }
+    .bg-ide { background-color: #1e1e1e !important; }
+    
+    /* Highlight.js tweaks for seamless integration */
+    pre code.hljs {
+        background: transparent !important;
+        padding: 0 !important;
+        white-space: pre-wrap !important; /* Misión: Asegurar formato de texto */
+    }
+    
+    /* Highlight.js Line Numbers Plugin Styles */
+    .hljs-ln-numbers {
+        color: #6e7681;
+        text-align: right;
+        padding-right: 15px !important;
+        user-select: none;
+        vertical-align: top;
+        min-width: 40px;
+    }
+    .hljs-ln-code {
+        padding-left: 10px !important;
+    }
+
+    /* Terminal Prompt */
+    .terminal-prompt { color: #4ade80; } /* green-400 */
+</style>
+
+<div class="w-full max-w-5xl mx-auto ide-font">
+    <!-- IDE Header Context -->
+    <div class="flex justify-between items-center mb-4 text-[10px] text-muted/70 px-2 tracking-widest uppercase">
+        <div class="flex gap-4 items-center">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-code-branch"></i> Evaluación Activa ({{ remaining }}/{{ total }})</span>
+        </div>
+    </div>
+
+    <!-- IDE Window -->
+    <div class="bg-ide rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[75vh] max-h-[850px]" data-question-id="{{ question.id }}">
+        
+        <!-- OS Top Bar -->
+        <div class="bg-[#2d2d2d] border-b border-white/5 h-10 flex items-center px-4 select-none relative">
+            <div class="flex gap-2 absolute left-4">
+                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+            </div>
+            
+            <div class="text-[11px] text-white/40 flex-1 text-center font-sans tracking-wide">
+                {% if is_inflection %}inflexion_exam.py{% else %}module_{{ module_id }}_test.py{% endif %} - Visual Studio Code
+            </div>
+
+            <!-- Integrated Status/HUD -->
+            <div class="absolute right-4 flex gap-4 text-xs">
+                <span id="userCoins" class="text-yellow-500 font-bold flex items-center gap-1"><i class="fa-solid fa-coins"></i> {{ user.coins }}</span>
+                <span class="relative group cursor-pointer text-purple-400 font-bold flex items-center gap-1" onclick="buyStock()">
+                    <span id="userStock"><i class="fa-solid fa-bolt"></i> {{ stock }}/20</span>
+                    <div class="absolute top-full right-0 mt-2 hidden group-hover:block z-50">
+                        <div class="whitespace-nowrap bg-[#252526] border border-white/10 text-white text-[10px] p-2 rounded shadow-xl">
+                            Clic para +10 (50 Coins)
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+
+        <!-- IDE Content Area -->
+        <div class="flex flex-1 overflow-hidden relative">
+            <!-- Timer Overlay (Subtle in editor corner) -->
+            <div class="absolute top-4 right-6 text-right z-10">
+                <div class="text-[10px] text-white/30 uppercase mb-1">Timeout</div>
+                <div id="timerText" class="text-2xl font-black text-cyan-400 font-sans tracking-tighter">--</div>
+            </div>
+
+            <!-- Editor Area -->
+            <div class="flex-1 p-6 overflow-y-auto">
+                <div class="text-gray-500 mb-4 text-xs"># Tema: {{ question.Tema or question.Concepto }} [{{ question.Dificultad }}]</div>
+                
+                <!-- Format the question for Highlight.js with Overflow -->
+                <div class="text-[14px] leading-relaxed mb-2 overflow-x-auto">
+<pre style="margin: 0; padding: 0.5rem 0;"><code class="language-python">{{ question.Pregunta | safe }}</code></pre>
+                </div>
+                
+                <!-- Blinking cursor -->
+                <div class="text-white animate-pulse mt-2 ml-[3.8em]">_</div>
+            </div>
+        </div>
+
+        <!-- Terminal / Output Panel -->
+        <div class="h-[260px] bg-[#181818] border-t border-white/10 flex flex-col">
+            <!-- Terminal Tabs -->
+            <div class="flex px-4 bg-[#252526] border-b border-black text-[11px] uppercase tracking-wider">
+                <div class="px-4 py-2 border-b-2 border-transparent text-white/40 cursor-default">PROBLEMS</div>
+                <div class="px-4 py-2 border-b-2 border-transparent text-white/40 cursor-default">OUTPUT</div>
+                <div class="px-4 py-2 border-b-2 border-[#007acc] text-white/90 bg-[#1e1e1e]">TERMINAL</div>
+            </div>
+            
+            <!-- Terminal Content (Options) -->
+            <div class="flex-1 p-4 overflow-y-auto">
+                <div class="text-xs mb-3"><span class="terminal-prompt">PS C:\RoleCraft&gt;</span> <span class="text-white/90">python run.py</span></div>
+                <div class="text-white/60 text-sm mb-4">¿Cuál será la Salida? o ¿Qué va a devolver la función? Seleccione una opción:</div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {% for opt in ['A', 'B', 'C', 'D', 'E', 'F'] %}
+                        {% set option_text = question['Op' ~ opt] %}
+                        {% if option_text %}
+                        <button onclick="submitAnswer('{{ opt }}')" 
+                                class="group flex items-center gap-3 p-3 rounded bg-white/5 border border-white/10 hover:border-cyan-400 hover:bg-cyan-400/10 transition-all text-left">
+                            <span class="text-cyan-400 md:font-bold">[{{ opt }}]</span>
+                            <span class="text-white/80 text-sm font-mono truncate group-hover:text-white">{{ option_text }}</span>
+                        </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- IDE Feedback Overlay (Simulates Terminal output) -->
+<div id="feedbackOverlay" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/80 backdrop-blur-sm">
+    <div class="bg-[#1e1e1e] border border-white/20 p-8 rounded-lg shadow-2xl max-w-lg w-full font-mono">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2 mb-4">
+            <span class="text-sm text-white/50">Test Result</span>
+            <div class="flex gap-1">
+                <div class="w-3 h-3 rounded-full bg-white/20"></div>
+                <div class="w-3 h-3 rounded-full bg-white/20"></div>
+            </div>
+        </div>
+        <div id="feedbackConsole" class="space-y-2">
+            <!-- Output injected here via JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let timeLeft = 45; // Default short
+    const difficulty = "{{ question.Dificultad }}";
+    if (difficulty === "Media") timeLeft = 60;
+    if (difficulty === "Dificil") timeLeft = 90;
+    
+    const initialTime = timeLeft;
+    const timerText = document.getElementById('timerText');
+
+    function updateTimer() {
+        timerText.innerText = timeLeft + "s";
+        
+        // Color warnings
+        if (timeLeft <= 5) timerText.className = "text-2xl font-black text-red-500 font-sans tracking-tighter animate-pulse";
+        else timerText.className = "text-2xl font-black text-yellow-500 font-sans tracking-tighter";
+
+        if (timeLeft <= 0) {
+            submitAnswer("TIMEOUT");
+        } else {
+            timeLeft--;
+            window.timerInterval = setTimeout(updateTimer, 1000);
+        }
+    }
+
+    async function submitAnswer(choice) {
+        if (window.isSubmitting) return;
+        window.isSubmitting = true;
+        clearTimeout(window.timerInterval);
+
+        try {
+            const currentQid = document.querySelector('.bg-ide').getAttribute('data-question-id');
+            const res = await fetch("{{ url_for('verify_answer', module_id=(0 if is_inflection else request.view_args.get('module_id', 1))) }}", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `answer=${choice}&q_id=${currentQid}`
+            });
+            const data = await res.json();
+
+            // Setup Terminal Feedback
+            const overlay = document.getElementById('feedbackOverlay');
+            const consoleDiv = document.getElementById('feedbackConsole');
+            overlay.classList.remove('hidden');
+            
+            let outputHtml = `<div class="text-white/60">$ executing validation...</div>`;
+            outputHtml += `<div class="text-white/60">> Input received: '${choice}'</div>`;
+
+            if (data.correct) {
+                outputHtml += `<div class="text-green-400 font-bold mt-2">✓ TEST PASSED</div>`;
+                outputHtml += `<div class="text-cyan-300">Reward: +${data.xp} XP</div>`;
+                showXpAnimation(data.xp, "green");
+            } else if (choice === "TIMEOUT") {
+                outputHtml += `<div class="text-yellow-500 font-bold mt-2">⚠ KILLED: TIMEOUT</div>`;
+                outputHtml += `<div class="text-white/50">Process took too long. Requiring retry later.</div>`;
+            } else {
+                outputHtml += `<div class="text-red-500 font-bold mt-2">✗ TEST FAILED</div>`;
+                outputHtml += `<div class="text-red-300">Penalty: ${data.xp} XP</div>`;
+                showXpAnimation(data.xp, "red");
+            }
+            
+            if (data.message) {
+                outputHtml += `<div class="text-white/40 text-xs mt-4">System: ${data.message}</div>`;
+            }
+
+            consoleDiv.innerHTML = outputHtml;
+
+            // Typewriter effect for terminal feel
+            const lines = consoleDiv.children;
+            for(let i=0; i<lines.length; i++) {
+                lines[i].style.opacity = '0';
+                setTimeout(() => { lines[i].style.opacity = '1'; }, i * 200 + 100);
+            }
+
+            setTimeout(() => {
+                if (data.completed) {
+                    window.location.href = "{{ url_for('training') }}";
+                } else {
+                    window.location.reload();
+                }
+            }, Math.max(1500, lines.length * 200 + 800));
+            
+        } catch (err) {
+            console.error(err);
+            window.isSubmitting = false;
+            alert("Exception in Main Thread: Node unreachabe.");
+            updateTimer(); // Resume if failed
+        }
+    }
+
+    async function buyStock() {
+        const res = await fetch("{{ url_for('buy_questions') }}", { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('userStock').innerHTML = `<i class="fa-solid fa-bolt mr-1"></i> ${data.new_stock}/20`;
+            document.getElementById('userCoins').innerHTML = `<i class="fa-solid fa-coins mr-1"></i> ${data.new_coins}`;
+        } else {
+            alert(data.message);
+        }
+    }
+
+    function showXpAnimation(amount, color) {
+        const div = document.createElement('div');
+        div.className = 'xp-float fixed z-[60] font-black tracking-tighter text-4xl pointer-events-none drop-shadow-lg';
+        div.innerText = (amount > 0 ? "+" : "") + amount + " XP";
+        div.style.color = color === "green" ? "#4ade80" : "#ef4444";
+        div.style.left = '50%';
+        div.style.top = '40%';
+        div.style.transform = 'translate(-50%, -50%)';
+        div.style.animation = 'floatUp 1.5s ease-out forwards';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 1500);
+    }
+    
+    // Add custom animation styles for floating XP dynamically
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes floatUp {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            20% { transform: translate(-50%, -60%) scale(1.2); opacity: 1; }
+            80% { transform: translate(-50%, -100%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -120%) scale(0.8); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Initial highlight logic
+    function updateCode() {
+        if(typeof hljs !== 'undefined') {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+                if(typeof hljs.lineNumbersBlock === 'function') {
+                    hljs.lineNumbersBlock(block);
+                }
+            });
+        }
+    }
+
+    // Call on load
+    updateCode();
+    updateTimer();
+</script>
+
+<!-- Highlight.js Line Numbers Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+{% endblock %}

@@ -49,3 +49,10 @@
     - Implementaci贸n de la **Regla #13** en `.agent/rules.md` para control de despliegue manual.
     - A帽adidos enlaces externos seguros con `target="_blank"` y `rel="noopener noreferrer"`.
 - **Backend Reforzado**: Correcci贸n de dependencias (`requests`) y optimizaci贸n de la l贸gica de validaci贸n t茅cnica local.
+
+## 17 de Marzo de 2026 - Limpieza y Estabilizaci髇 de Evaluaci髇
+- **feat/refactor**: Consolidaci髇 de archivos CSV de preguntas (preguntas_modulo_1.csv, preguntas_python.csv) en un 鷑ico archivo maestro llamado preguntas.csv.
+- **fix**: Resoluci髇 de bucle infinito en avance de cola de preguntas al acertar en la evaluaci髇.
+- **fix**: Correcci髇 del c醠culo y propagaci髇 del error 'Undefined XP' para dar soporte robusto al cliente IDE (Terminal) cuando el stock llega a 0.
+- **refactor**: Limpieza de entorno eliminando temporales .pyc / __pycache__ y archivos scripts obsoletos (seed_modules.py, init_module1.py).
+

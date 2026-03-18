@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto py-10">
+    <!-- Progress Indicator -->
+    <div class="flex justify-center mb-10 gap-2">
+        <div id="step-1-dot" class="h-2 w-12 rounded-full bg-cyan-400"></div>
+        <div id="step-2-dot" class="h-2 w-12 rounded-full bg-white/10"></div>
+        <div id="step-3-dot" class="h-2 w-12 rounded-full bg-white/10"></div>
+    </div>
+
+    <div class="glass-panel p-10 rounded-3xl border-t-8 border-cyan-400 relative overflow-hidden transition-all duration-500" id="diagnostic-container">
+        
+        <!-- Paso 1: Entorno -->
+        <div id="step-1" class="space-y-8 animate-in fade-in slide-in-from-bottom-5">
+            <div class="text-center">
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full font-bold uppercase tracking-widest mb-4 inline-block">Fase 1: Preparación del Agente</span>
+                <h2 class="text-3xl font-black text-white leading-tight mt-2">¿Ya tienes configurado tu entorno de desarrollo?</h2>
+                <p class="text-muted mt-2">Necesitamos asegurar que tu estación de trabajo (VS Code + Python) esté lista para la acción.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="nextStep(1, true)" class="group p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400">
+                            <i class="fa-solid fa-check-double text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-white">SÍ, TODO LISTO</div>
+                            <div class="text-xs text-muted">Tengo VS Code y Python configurados.</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="showVideo()" class="group p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-yellow-500/50 hover:bg-yellow-500/5 transition-all text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-500">
+                            <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-white">NO RECUERDO / NO</div>
+                            <div class="text-xs text-muted">Necesito una guía rápida de instalación.</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Video Section (Hidden by default) -->
+            <div id="video-guide" class="hidden mt-8 space-y-4">
+                <div class="aspect-video bg-black rounded-2xl overflow-hidden border border-white/20">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/VqCgcpAypFQ" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-muted">Configura tu entorno y luego haz clic en "SÍ, TODO LISTO".</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 2: Otros Lenguajes -->
+        <div id="step-2" class="hidden space-y-8 animate-in fade-in slide-in-from-bottom-5">
+            <div class="text-center">
+                <span class="text-[10px] bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full font-bold uppercase tracking-widest mb-4 inline-block">Fase 2: Perfil Técnico</span>
+                <h2 class="text-3xl font-black text-white leading-tight mt-2">¿Dominas otros lenguajes de programación?</h2>
+                <p class="text-muted mt-2">Queremos saber si ya eres un Agente experimentado en otras arquitecturas.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="nextStep(2, true)" class="group p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-400/50 hover:bg-purple-400/5 transition-all text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+                            <i class="fa-solid fa-brain text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-white">SÍ, SOY POLÍGLOTA</div>
+                            <div class="text-xs text-muted">Manejo JS, Java, C#, etc.</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button onclick="nextStep(2, false)" class="group p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white">
+                            <i class="fa-solid fa-code text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-white">PRIMERA VEZ</div>
+                            <div class="text-xs text-muted">Estoy iniciando mi camino aquí.</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Paso 3: Confirmación -->
+        <div id="step-3" class="hidden text-center space-y-8 animate-in fade-in zoom-in">
+            <div class="w-20 h-20 bg-cyan-500/20 text-cyan-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-shield-halved text-4xl"></i>
+            </div>
+            <h2 class="text-3xl font-black text-white leading-tight">Diagnóstico Completado</h2>
+            <div id="polyglot-msg" class="hidden py-4 px-6 bg-purple-500/10 border border-purple-500/30 rounded-2xl text-purple-300 text-sm italic mx-auto max-w-md">
+                "Excelente Agente. Hemos registrado tu perfil Políglota. Sin embargo, en RoleCraft medimos tu potencial a través de Python. Prepárate para el examen de inflexión."
+            </div>
+            <p class="text-muted max-w-md mx-auto">Tu estación está lista. Ahora debemos medir tu nivel de sincronización con el lenguaje principal.</p>
+            
+            <form action="{{ url_for('save_diagnostic') }}" method="POST">
+                <input type="hidden" name="is_polyglot" id="polyglot-input" value="0">
+                <button type="submit" class="inline-flex items-center gap-3 px-10 py-4 rounded-full bg-cyan-400 text-black font-black uppercase tracking-widest hover:scale-105 transition-all">
+                    INICIAR EXAMEN DE INFLEXIÓN <i class="fa-solid fa-bolt"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let diagnosticData = {
+        is_polyglot: false
+    };
+
+    function showVideo() {
+        document.getElementById('video-guide').classList.remove('hidden');
+    }
+
+    function nextStep(current, val) {
+        if (current === 1) {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+            document.getElementById('step-2-dot').classList.add('bg-cyan-400');
+            document.getElementById('diagnostic-container').classList.replace('border-cyan-400', 'border-purple-500');
+        } else if (current === 2) {
+            diagnosticData.is_polyglot = val;
+            document.getElementById('polyglot-input').value = val ? 1 : 0;
+            if (val) document.getElementById('polyglot-msg').classList.remove('hidden');
+            
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+            document.getElementById('step-3-dot').classList.add('bg-cyan-400');
+            document.getElementById('diagnostic-container').classList.replace('border-purple-500', 'border-cyan-400');
+        }
+    }
+</script>
+{% endblock %}

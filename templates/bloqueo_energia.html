@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full max-w-2xl mx-auto py-20 text-center">
+    <div class="relative inline-block mb-10">
+        <!-- Floating Energy Cells -->
+        <div class="absolute -top-10 -left-10 w-20 h-20 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute -bottom-10 -right-10 w-20 h-20 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
+        
+        <div class="glass-panel p-10 rounded-full border-4 border-white/5 relative z-10">
+            <i class="fa-solid fa-battery-empty text-7xl text-gray-500 animate-bounce"></i>
+        </div>
+    </div>
+
+    <h1 class="text-5xl font-black text-white uppercase tracking-tighter mb-4">Célula de Energía Agotada</h1>
+    <p class="text-xl text-muted mb-10">Has alcanzado el límite de sincronización neuronal por hoy. El sistema necesita recalibrar tus circuitos.</p>
+
+    <div class="glass-panel p-8 rounded-3xl border border-white/10 shadow-accent max-w-md mx-auto">
+        <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-[.5em] mb-4">Tiempo estimado de recarga</div>
+        <div class="text-6xl font-black text-white font-mono" id="countdown">
+            {{ hours }}:00:00
+        </div>
+        
+        <div class="mt-8 pt-6 border-t border-white/5 space-y-4">
+            <p class="text-sm text-gray-400 italic">"La paciencia es la mayor virtud de un Agente en la red."</p>
+            <a href="{{ url_for('dashboard') }}" class="inline-block text-sm font-bold text-[var(--accent-color)] hover:underline">
+                VOLVER AL DASHBOARD
+            </a>
+        </div>
+    </div>
+
+    <!-- Background Decoration -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-20 z-[-1] overflow-hidden">
+        <div class="absolute top-[20%] left-[10%] text-[20vw] font-black text-white/5 select-none">403</div>
+        <div class="absolute bottom-[20%] right-[10%] text-[20vw] font-black text-white/5 select-none">RELOAD</div>
+    </div>
+</div>
+
+<script>
+    // Simple visual countdown simulation
+    let time = {{ hours }} * 3600;
+    const cooldown = document.getElementById('countdown');
+    
+    function updateClock() {
+        const h = Math.floor(time / 3600);
+        const m = Math.floor((time % 3600) / 60);
+        const s = time % 60;
+        cooldown.innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        if (time > 0) {
+            time--;
+            setTimeout(updateClock, 1000);
+        }
+    }
+    updateClock();
+</script>
+{% endblock %}

@@ -1,41 +1,56 @@
 import sqlite3
 
 def migrate():
-    conn = sqlite3.connect("rolecraft.sqlite3")
+    conn = sqlite3.connect('rolecraft.sqlite3')
     cursor = conn.cursor()
     
-    # Migrar users
-    columns_users = [
-        ("skill_backend", "INTEGER DEFAULT 0"),
-        ("skill_frontend", "INTEGER DEFAULT 0"),
-        ("skill_git", "INTEGER DEFAULT 0"),
-        ("skill_ia", "INTEGER DEFAULT 0"),
-        ("skill_pm", "INTEGER DEFAULT 0"),
-        ("skill_sql", "INTEGER DEFAULT 0")
-    ]
-    
-    for col_name, col_type in columns_users:
-        try:
-            cursor.execute(f"ALTER TABLE users ADD COLUMN {col_name} {col_type};")
-            print(f"Columna {col_name} añadida a users.")
-        except sqlite3.OperationalError:
-            print(f"Columna {col_name} ya existe en users.")
+    # Agregar columnas a users si no existen
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN coins INTEGER DEFAULT 0")
+        print("Añadida columna 'coins' a 'users'")
+    except sqlite3.OperationalError:
+        print("Columna 'coins' ya existe")
 
-    # Migrar groups
-    columns_groups = [
-        ("phase", "INTEGER DEFAULT 1"),
-        ("vacant_roles", "VARCHAR(255) DEFAULT ''")
-    ]
-    
-    for col_name, col_type in columns_groups:
-        try:
-            cursor.execute(f"ALTER TABLE groups ADD COLUMN {col_name} {col_type};")
-            print(f"Columna {col_name} añadida a groups.")
-        except sqlite3.OperationalError:
-            print(f"Columna {col_name} ya existe en groups.")
-        
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN question_stock INTEGER DEFAULT 20")
+        print("Añadida columna 'question_stock' a 'users'")
+    except sqlite3.OperationalError:
+        print("Columna 'question_stock' ya existe")
+
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN last_stock_recharge DATETIME")
+        print("Añadida columna 'last_stock_recharge' a 'users'")
+    except sqlite3.OperationalError:
+        print("Columna 'last_stock_recharge' ya existe")
+
+    # Agregar columnas a user_module_progress
+    try:
+        cursor.execute("ALTER TABLE user_module_progress ADD COLUMN evaluation_queue TEXT")
+        print("Añadida columna 'evaluation_queue' a 'user_module_progress'")
+    except sqlite3.OperationalError:
+        print("Columna 'evaluation_queue' ya existe")
+
+    try:
+        cursor.execute("ALTER TABLE user_module_progress ADD COLUMN current_streak INTEGER DEFAULT 0")
+        print("Añadida columna 'current_streak' a 'user_module_progress'")
+    except sqlite3.OperationalError:
+        print("Columna 'current_streak' ya existe")
+
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN is_polyglot INTEGER DEFAULT 0")
+        print("Añadida columna 'is_polyglot' a 'users'")
+    except sqlite3.OperationalError:
+        print("Columna 'is_polyglot' ya existe")
+
+    try:
+        cursor.execute("ALTER TABLE users ADD COLUMN last_exam_attempt DATETIME")
+        print("Añadida columna 'last_exam_attempt' a 'users'")
+    except sqlite3.OperationalError:
+        print("Columna 'last_exam_attempt' ya existe")
+
     conn.commit()
     conn.close()
+    print("Migración completada con éxito.")
 
 if __name__ == "__main__":
     migrate()
