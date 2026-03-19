@@ -121,9 +121,9 @@
                         </h3>
                         <div class="space-y-4">
                             {% macro skill_bar(name, xp, role_key, is_vertical=True) %}
-                            <div>
+                            <div class="cursor-pointer group/skill" onclick="openRoleModal('{{ role_key }}')">
                                 <div class="flex justify-between text-xs mb-1 items-center">
-                                    <span class="text-[var(--text-main)] opacity-90">{{ name }}</span>
+                                    <span class="text-[var(--text-main)] opacity-90 group-hover/skill:text-[var(--accent-color)] transition-colors">{{ name }}</span>
                                     <span class="text-[var(--accent-color)]">{{ xp }} XP</span>
                                 </div>
                                 <div class="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
@@ -136,6 +136,19 @@
 
                             {{ skill_bar('Backend (Python)', user.skill_backend, 'backend') }}
                             {{ skill_bar('Frontend', user.skill_frontend, 'frontend') }}
+                            {{ skill_bar('Project Manager', user.skill_pm, 'pm') }}
+                        </div>
+                    </div>
+
+                    <!-- Sección: Supervivencia -->
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-muted mb-4 flex justify-between items-center">
+                            <span>Supervivencia</span>
+                        </h3>
+                        <div class="space-y-4">
+                            {{ skill_bar('Git & GitHub', user.skill_git, 'git') }}
+                            {{ skill_bar('Environment Mastery (IA)', user.skill_ia, 'ia') }}
+                            {{ skill_bar('SQL & Data Foundations', user.skill_sql, 'sql') }}
                         </div>
                     </div>
                 </div>

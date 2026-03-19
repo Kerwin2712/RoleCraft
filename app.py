@@ -479,12 +479,12 @@ def inflection_exam(current_user):
                 user_db.last_stock_recharge = datetime.now()
                 db.commit()
         
-        # 1. Verificar bloqueo de 24 horas
-        if user_db.last_exam_attempt:
-            diff = datetime.now() - user_db.last_exam_attempt
-            if diff.total_seconds() < 24 * 3600:
-                hours_left = 24 - (diff.total_seconds() // 3600)
-                return render_template("bloqueo_energia.html", user=user_db, hours=int(hours_left))
+        # 1. Verificar bloqueo de 24 horas (DESHABILITADO por solicitud para acceso ininterrumpido)
+        # if user_db.last_exam_attempt:
+        #     diff = datetime.now() - user_db.last_exam_attempt
+        #     if diff.total_seconds() < 24 * 3600:
+        #         hours_left = 24 - (diff.total_seconds() // 3600)
+        #         return render_template("bloqueo_energia.html", user=user_db, hours=int(hours_left))
 
         # 2. Cargar preguntas consolidadas (Modulo 0)
         questions = []

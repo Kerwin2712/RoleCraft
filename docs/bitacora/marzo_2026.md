@@ -1,5 +1,12 @@
 # BitÃ¡cora de Cambios - Marzo 2026
 
+## 19 de Marzo de 2026 - RestauraciÃ³n de Habilidades y Acceso Directo a Test
+- **feat**: RestauraciÃ³n de la Matriz de Habilidades completa en `dashboard_aprendiz.html` (6 habilidades: Backend, Frontend, PM, Git, IA, SQL).
+- **feat**: Mejora de interactividad en el dashboard permitiendo abrir modales de información al hacer clic en las barras de habilidades.
+- **fix**: Deshabilitado el bloqueo de 24 horas (`last_exam_attempt`) en `app.py` para permitir el acceso inmediato e ininterrumpido al Test DiagnÃ³stico/InflexiÃ³n.
+- **docs**: ActualizaciÃ³n de la bitÃ¡cora de marzo y validaciÃ³n visual de los cambios mediante pruebas en navegador.
+
+
 ## [11-03-2026 13:48:33] - ConfiguraciÃ³n Inicial del Entorno y Reglas
 - Se crearon los archivos base para los flujos de trabajo del agente (`test_workflow.md`, `database_workflow.md`).
 - Se estableciÃ³ el perfil de `Clean Code Architect`.
