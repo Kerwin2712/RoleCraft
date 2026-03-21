@@ -19,9 +19,8 @@ Modulo,Dificultad,Tema,Pregunta,OpA,OpB,OpC,OpD,OpE,OpF,Correcta,XP
 0,Dificil,Operadores,"# Operación de potencia\nresultado = 2 ** 3\nprint(resultado)",6,8,5,"2.3",None,Error SyntaxError,B,20
 0,Dificil,POO,"class Base:\n    def __init__(self):\n        print(""Base"")\n\nclass Derivada(Base):\n    def __init__(self):\n        super().__init__()\n        print(""Derivada"")\n\nd = Derivada()","Solo ""Base""","Solo ""Derivada""","""Base""\n""Derivada""","""Derivada""\n""Base""",Error TypeError,None,C,50
 0,Dificil,Excepciones,"raise ValueError(""Mensaje de error personalizado"")\n# ¿Qué tipo de excepción se lanza?","TypeError","ValueError","RuntimeError","Exception","SyntaxError",None,B,50
-1,Facil,Sintaxis,"¿Cómo se comenta una línea en Python?",//,#,/**/,--,rem,!,B,10
-1,Facil,Variables,"¿Cuál es el operador de asignación?",==,=,:,<=,->,set,B,10
-1,Facil,Tipos,"¿Qué devuelve type(10)?",str,float,int,list,dict,bool,C,10
-1,Media,Listas,"¿Cómo agregas un elemento al final de una lista?",add(),push(),append(),insert(),extend(),join(),C,20
-1,Media,Condicionales,"¿Cuál es la palabra clave para 'si no'?",else,elseif,elif,otherwise,except,then,C,20
-1,Dificil,Funciones,"¿Cómo se define una función?",func,def,function,define,lambda,method,B,30
+1,Facil,VSCode,"¿Qué atajo de teclado abre la paleta de comandos en Visual Studio Code?","Ctrl+Shift+P","Ctrl+S","Alt+F4","Ctrl+C","Ctrl+V","F12",A,10
+1,Facil,Python,"¿Cuál es el comando recomendado para crear un entorno virtual en Python?","python -m venv env","mkdir env","pip install env","new env","virtualenv create","python setup",A,10
+1,Media,Antigravity,"Para que RoleCraft funcione correctamente, Antigravity debe tener acceso a:","Tu cámara web","El directorio del proyecto","Tu cuenta de Facebook","Solo internet","Tu micrófono","Tu historial de búsqueda",B,20
+1,Media,VSCode,"¿Cómo se instala una extensión en VSCode?","Desde el panel de extensiones (Ctrl+Shift+X)","Descargando un .exe","Por correo electrónico","No se pueden instalar","Desde Word","Reiniciando el PC",A,20
+1,Dificil,Colaboración,"¿Cuál es la herramienta principal para el control de versiones en equipos de RoleCraft?","WhatsApp","Git / GitHub","Dropbox","Google Drive","Slack","Trello",B,30

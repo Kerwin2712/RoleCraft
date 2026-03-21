@@ -158,13 +158,13 @@ def dashboard(current_user):
                 "locked_by_xp": m.id == 3 and user_db.xp < MIN_XP_FOR_GIT
             })
             
-    return render_template("dashboard_aprendiz.html", 
-                           user=current_user, 
-                           groups=available_groups, 
-                           roles_info=roles_data.get("roles", {}),
-                           universal_skills=roles_data.get("universal_skills", []),
-                           modules=modules_data,
-                           min_xp_git=MIN_XP_FOR_GIT)
+        return render_template("dashboard_aprendiz.html", 
+                               user=user_db, 
+                               groups=available_groups, 
+                               roles_info=roles_data.get("roles", {}),
+                               universal_skills=roles_data.get("universal_skills", []),
+                               modules=modules_data,
+                               min_xp_git=MIN_XP_FOR_GIT)
 
 import json
 import csv
@@ -203,7 +203,7 @@ def training(current_user):
                 "locked_by_xp": m.id == 3 and user_db.xp < MIN_XP_FOR_GIT
             })
             
-    return render_template("entrenamiento.html", user=user_db, modules=modules_data, min_xp_git=MIN_XP_FOR_GIT)
+        return render_template("entrenamiento.html", user=user_db, modules=modules_data, min_xp_git=MIN_XP_FOR_GIT)
 
 @app.route("/evaluacion/<int:module_id>")
 @token_required
@@ -257,9 +257,8 @@ def evaluation(current_user, module_id):
         current_q_idx = queue[0]
         current_question = questions[current_q_idx]
         current_question['id'] = current_q_idx
-
-    return render_template("evaluacion.html", user=user_db, question=current_question, 
-                           remaining=len(queue), total=len(questions), stock=user_db.question_stock)
+        return render_template("evaluacion.html", user=user_db, question=current_question, 
+                               remaining=len(queue), total=len(questions), stock=user_db.question_stock)
 
 @app.route("/verify-answer/<int:module_id>", methods=["POST"])
 @token_required
@@ -450,10 +449,19 @@ def verify_answer(current_user, module_id):
 def diagnostic(current_user):
     with SessionLocal() as db:
         user_db = db.query(User).get(current_user.id)
-        # Si ya hizo el diagnóstico, saltar al examen o dashboard
+        # Si ya hizo el diagnóstico inicial (selección), ir al examen
         if user_db.is_polyglot is not None:
              return redirect(url_for('inflection_exam'))
-    return render_template("diagnostico.html", user=current_user)
+        return render_template("diagnostico.html", user=user_db)
+
+@app.route("/tutorial/<int:module_id>")
+@token_required
+def view_tutorial(current_user, module_id):
+    with SessionLocal() as db:
+        user_db = db.query(User).get(current_user.id)
+        if module_id == 1:
+            return render_template("tutorial_entorno.html", user=user_db)
+        return redirect(url_for('view_module', module_id=module_id))
 
 @app.route("/save-diagnostic", methods=["POST"])
 @token_required
@@ -583,9 +591,7 @@ def view_module(current_user, module_id):
             return redirect(url_for('training'))
                 
         progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id, module_id=module_id).first()
-        status = progress.status if progress else "available"
-        
-    return render_template("modulo_detalle.html", user=user_db, module=module, status=status)
+        return render_template("modulo_detalle.html", user=user_db, module=module, status=status)
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)

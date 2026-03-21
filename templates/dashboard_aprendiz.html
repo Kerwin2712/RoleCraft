@@ -64,7 +64,7 @@
                         <div class="flex justify-between items-center mt-4">
                             {% if module.status != 'locked' %}
                                 {% if module.id == 1 and module.status != 'completed' %}
-                                    <a href="{{ url_for('evaluation', module_id=module.id) }}" 
+                                    <a href="{{ url_for('view_tutorial', module_id=module.id) }}" 
                                        class="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 uppercase">
                                         EVALUARSE <i class="fa-solid fa-circle-play ml-1"></i>
                                     </a>

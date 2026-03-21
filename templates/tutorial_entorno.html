@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-8 py-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div class="glass-panel p-10 rounded-3xl border-l-8 border-[var(--accent-color)] shadow-accent relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-[var(--accent-color)] opacity-5 blur-[100px] rounded-full"></div>
+        
+        <div class="relative z-10">
+            <h1 class="text-4xl font-black text-[var(--text-header)] uppercase tracking-tighter mb-4">
+                Misión: <span class="text-[var(--accent-color)]">Configuración de Entorno</span>
+            </h1>
+            <p class="text-lg text-muted leading-relaxed">
+                Antes de comenzar tu carrera en RoleCraft, debemos asegurar que tu estación de trabajo sea digna de un Experto. 
+                Sigue estos pasos para preparar tu entorno.
+            </p>
+        </div>
+    </div>
+
+    <!-- Step-by-Step Guide -->
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Paso 1: VSCode -->
+        <div class="glass-panel p-8 rounded-2xl flex flex-col md:flex-row gap-8 items-center border border-white/5 hover:border-[var(--accent-color)]/30 transition-all group">
+            <div class="w-20 h-20 rounded-2xl bg-blue-500/10 flex items-center justify-center shrink-0 border border-blue-500/20 group-hover:scale-110 transition-transform">
+                <i class="fa-brands fa-microsoft text-4xl text-blue-400"></i>
+            </div>
+            <div class="flex-grow">
+                <h3 class="text-xl font-bold text-[var(--text-header)] mb-2">1. Visual Studio Code</h3>
+                <p class="text-sm text-muted mb-4">El editor preferido de RoleCraft. Instálalo y domina los atajos básicos como <span class="text-[var(--accent-color)] font-mono">Ctrl+Shift+P</span> para la paleta de comandos.</p>
+                <div class="flex gap-4">
+                    <a href="https://code.visualstudio.com/" target="_blank" class="text-xs font-bold text-blue-400 hover:underline">Descargar VSCode <i class="fa-solid fa-external-link ml-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 2: Python & Venv -->
+        <div class="glass-panel p-8 rounded-2xl flex flex-col md:flex-row gap-8 items-center border border-white/5 hover:border-[var(--secondary-color)]/30 transition-all group">
+            <div class="w-20 h-20 rounded-2xl bg-yellow-500/10 flex items-center justify-center shrink-0 border border-yellow-500/20 group-hover:scale-110 transition-transform">
+                <i class="fa-brands fa-python text-4xl text-yellow-400"></i>
+            </div>
+            <div class="flex-grow">
+                <h3 class="text-xl font-bold text-[var(--text-header)] mb-2">2. Python & Entornos Virtuales</h3>
+                <p class="text-sm text-muted mb-4">Asegúrate de tener Python 3.10+ instalado. Siempre trabaja en un entorno virtual aislado:</p>
+                <div class="bg-black/40 p-3 rounded-lg border border-white/10 font-mono text-xs text-green-400">
+                    python -m venv env<br>
+                    # Windows: .\env\Scripts\activate
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Antigravity -->
+        <div class="glass-panel p-8 rounded-2xl flex flex-col md:flex-row gap-8 items-center border border-white/5 hover:border-purple-500/30 transition-all group">
+            <div class="w-20 h-20 rounded-2xl bg-purple-500/10 flex items-center justify-center shrink-0 border border-purple-500/20 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-brain text-4xl text-purple-400"></i>
+            </div>
+            <div class="flex-grow">
+                <h3 class="text-xl font-bold text-[var(--text-header)] mb-2">3. Extensión Antigravity</h3>
+                <p class="text-sm text-muted mb-4">Esta extensión es tu compañera de IA. Actívala y dale acceso al directorio de tu proyecto para que pueda entender tu código en tiempo real.</p>
+                <p class="text-xs text-purple-400 font-bold uppercase tracking-widest">Requisito Indispensable para Equipos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conclusion & Action -->
+    <div class="flex flex-col items-center gap-6 mt-4">
+        <p class="text-center text-muted max-w-lg">
+            ¿Ya tienes todo listo? Al presionar el botón de abajo, comenzará una breve verificación de 5 preguntas para validar tus conocimientos sobre el entorno.
+        </p>
+        
+        <a href="{{ url_for('evaluation', module_id=1) }}" 
+           class="px-10 py-5 rounded-full bg-gradient-to-r from-[var(--accent-color)] to-[var(--secondary-color)] text-[var(--bg-color)] font-black text-xl uppercase tracking-tighter shadow-accent hover:scale-[1.05] active:scale-95 transition-all">
+            Iniciar Verificación <i class="fa-solid fa-shield-check ml-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

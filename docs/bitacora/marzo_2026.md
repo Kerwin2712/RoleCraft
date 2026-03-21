@@ -1,5 +1,13 @@
 # Bitácora de Cambios - Marzo 2026
 
+## 20 de Marzo de 2026 - Rediseño del Módulo 1 y Filtro de Entorno
+- **feat**: Implementación del Módulo 1 como "Misión de Configuración de Entorno" (VSCode, Python, Antigravity).
+- **feat**: Nueva ruta `/tutorial/1` con guía visual premium para la preparación de la estación de trabajo.
+- **feat**: Renovación total del banco de preguntas del Módulo 1 en `preguntas.csv` con enfoque técnico/entorno.
+- **fix**: Resolución global de errores `DetachedInstanceError` mediante la reestructuración del ciclo de vida de las sesiones en las rutas de evaluación y módulos.
+- **refactor**: Optimización del botón "Test Diagnóstico" para direccionamiento inteligente hacia la prueba de programación.
+
+
 ## 19 de Marzo de 2026 - Restauración de Habilidades y Acceso Directo a Test
 - **feat**: Restauración de la Matriz de Habilidades completa en `dashboard_aprendiz.html` (6 habilidades: Backend, Frontend, PM, Git, IA, SQL).
 - **feat**: Mejora de interactividad en el dashboard permitiendo abrir modales de información al hacer clic en las barras de habilidades.
