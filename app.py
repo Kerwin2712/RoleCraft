@@ -591,6 +591,7 @@ def view_module(current_user, module_id):
             return redirect(url_for('training'))
                 
         progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id, module_id=module_id).first()
+        status = progress.status if progress else "available"
         return render_template("modulo_detalle.html", user=user_db, module=module, status=status)
 
 if __name__ == "__main__":

@@ -5,7 +5,9 @@
 - **feat**: Nueva ruta `/tutorial/1` con guía visual premium para la preparación de la estación de trabajo.
 - **feat**: Renovación total del banco de preguntas del Módulo 1 en `preguntas.csv` con enfoque técnico/entorno.
 - **fix**: Resolución global de errores `DetachedInstanceError` mediante la reestructuración del ciclo de vida de las sesiones en las rutas de evaluación y módulos.
+- **fix**: Resolución de `NameError: status is not defined` en la ruta `/entrenamiento_detalle/` causado por un error de edición en la gestión de sesiones.
 - **refactor**: Optimización del botón "Test Diagnóstico" para direccionamiento inteligente hacia la prueba de programación.
+
 
 
 ## 19 de Marzo de 2026 - Restauración de Habilidades y Acceso Directo a Test
