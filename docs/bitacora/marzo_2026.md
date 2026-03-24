@@ -1,5 +1,9 @@
 # Bitácora de Cambios - Marzo 2026
 
+## 24 de Marzo de 2026 - Actualización de Portafolio e Identidad Visual
+- **docs**: Rediseño completo del `README.md` estructurándolo profesionalmente para uso como portafolio en GitHub (Arquitectura, Features, Instalación).
+- **docs**: Creación y formateo del Manual de Identidad Visual y UX (`ui_graphics.md`), definiendo la estética Neo-Cyberpunk, componentes clave y reglas de UX.
+
 ## 20 de Marzo de 2026 - Rediseño del Módulo 1 y Filtro de Entorno
 - **feat**: Implementación del Módulo 1 como "Misión de Configuración de Entorno" (VSCode, Python, Antigravity).
 - **feat**: Nueva ruta `/tutorial/1` con guía visual premium para la preparación de la estación de trabajo.
