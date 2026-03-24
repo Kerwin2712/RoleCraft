@@ -1,6 +1,11 @@
 # Bitácora de Cambios - Marzo 2026
 
-## 24 de Marzo de 2026 - Actualización de Portafolio e Identidad Visual
+## 24 de Marzo de 2026 - Motor de Misiones (Inicia tu proyecto) e Interactividad Avanzada
+- **feat/ux**: Refactorización profunda de las misiones bajo la nueva categoría **"Inicia tu proyecto"**. Reestructuración narrativa: Módulo 1 (Control de Versiones y GitHub), Módulo 2 (Entorno Virtual) y Módulo 3 (Prompting AI).
+- **feat/backend**: Creación de un **Quest Engine** centralizado mediante el diccionario global `MISSIONS_DEF` en `app.py`. Integración completa con Jinja2 en `modulo_detalle.html` para el renderizado dinámico de pasos sin usar embeds de video.
+- **feat/htmx**: Implementación del endpoint dinámico `/api/simulate/step/` para simular salidas de consola (erorres comunes de `python no se reconoce`) antes de la validación.
+- **feat/htmx**: Intervención OOB (Out-Of-Band) para actualizar la visualización de pasos activos, inyectar logs en una terminal lateral con `HX-Trigger` persistente, y generar tarjetas de validación asíncronas para el chequeo de progreso manual asistido por Inteligencia Artificial.
+- **feat**: Integración de un botón de desarrollador (Dev_Reset) en la barra de navegación que permite resetear XP, stock, completación de HTMX (`session`) e instancias `UserModuleProgress` en caliente vía el path `/dev_reset` para un testing óptimo de estado.
 - **docs**: Rediseño completo del `README.md` estructurándolo profesionalmente para uso como portafolio en GitHub (Arquitectura, Features, Instalación).
 - **docs**: Creación y formateo del Manual de Identidad Visual y UX (`ui_graphics.md`), definiendo la estética Neo-Cyberpunk, componentes clave y reglas de UX.
 - **feat/ui**: Rediseño inmersivo completo de  `dashboard_aprendiz.html` implementando la arquitectura visual descrita en el manual. Se reemplazaron colores fijos oscuros por variables modulares que respetan el contraste en el modo claro. Se añadió la Terminal Interactiva HTMX de asignación de roles y la barra superior de status.

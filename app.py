@@ -270,6 +270,16 @@ def verify_answer(current_user, module_id):
         user_db = db.query(User).get(current_user.id)
         progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id, module_id=module_id).first()
         module = db.query(Module).get(module_id)
+        
+        if not progress:
+            progress = UserModuleProgress(
+                user_id=current_user.id,
+                module_id=module_id,
+                status="in_progress",
+                current_streak=0
+            )
+            db.add(progress)
+            db.commit()
 
         if user_db.question_stock <= 0:
             return jsonify({
@@ -454,14 +464,156 @@ def diagnostic(current_user):
              return redirect(url_for('inflection_exam'))
         return render_template("diagnostico.html", user=user_db)
 
+MISSIONS_DEF = {
+    1: {
+        "title": "Lvl 1: Configuración de Repositorio",
+        "description": "El primer paso de todo gran desarrollador es asegurar su código. Crea un repositorio en GitHub, clónalo y conéctalo a tu editor de código preferido (VSCode con la extensión de Copilot o Antigravity con sus agentes recomendados).",
+        "difficulty": "Fácil",
+        "xp_reward": 50,
+        "module_title": "Módulo de Control de Versiones",
+        "steps": [
+            {
+                "id": 1,
+                "title": "Crear Repositorio en GitHub",
+                "instruction": "Ve a GitHub y crea un repositorio nuevo. Asegúrate de agregarle el '.gitignore' con la plantilla de Python desde el inicio.",
+                "code_snippet": "# Asegúrate de tener Git instalado"
+            },
+            {
+                "id": 2,
+                "title": "Clonar el Repositorio",
+                "instruction": "Abre tu terminal, navega a la carpeta de tus proyectos y clona el repositorio localmente ejecutando este comando:",
+                "code_snippet": "git clone <URL-DEL-REPO>"
+            },
+            {
+                "id": 3,
+                "title": "Primer Commit con IA",
+                "instruction": "Abre la carpeta en VSCode o Antigravity. Crea un archivo inicial, agrégalo al stage y realiza tu primer commit.",
+                "code_snippet": "git add .\ngit commit -m \"Mi primer commit asistido por IA\""
+            }
+        ]
+    },
+    2: {
+        "title": "Lvl 2: Entorno Virtual y Dependencias",
+        "description": "Protejamos tu sistema aislándolo. Un entorno virtual evita conflictos de dependencias entre proyectos distintos instalando módulos localmente.",
+        "difficulty": "Media",
+        "xp_reward": 50,
+        "module_title": "Módulo de Entorno",
+        "steps": [
+            {
+                "id": 1, 
+                "title": "Crear Entorno Virtual", 
+                "instruction": "Python utiliza entornos virtuales para no contaminar tu sistema. Abre tu terminal dentro del proyecto y ejecuta el comando:", 
+                "code_snippet": "python -m venv env",
+                "requires_simulation": True,
+                "simulate_msg": "> python -m venv env<br>> <span class='text-red-400'>ERROR: 'python' no se reconoce como un comando interno o externo, programa o archivo por lotes ejecutable.</span><br><br>> ¿Ves algún error parecido a este en tu terminal real? Pregúntale a tu IA de confianza, seguro te ayuda a solucionarlo.<br>> Explícale que estás intentando crear un entorno virtual para un proyecto en Python.<br>> Cuando tengas tu entorno listo y la carpeta 'env' creada, confirma aquí.",
+                "success_msg": "Verificación: Para confirmar que funcionó, busca una carpeta llamada 'env' en el explorador de archivos de tu editor.",
+                "terminal_msg": "> python -m venv env<br>> Creando entorno virtual... OK. [+10 XP]"
+            },
+            {
+                "id": 2, 
+                "title": "Activar el Entorno", 
+                "instruction": "En Windows, activa el entorno virtual ejecutando este script desde tu terminal de VSCode (PowerShell/CMD):", 
+                "code_snippet": ".\\env\\Scripts\\activate"
+            },
+            {
+                "id": 3, 
+                "title": "Instalar Dependencias", 
+                "instruction": "Crea un archivo `requirements.txt` con las dependencias iniciales e instálalas usando el gestor de paquetes pip:", 
+                "code_snippet": "pip install -r requirements.txt"
+            }
+        ]
+    },
+    3: {
+        "title": "Lvl 3: Mi Primer Prompt",
+        "description": "Tu inteligencia artificial asistente puede ser tu mayor aliado si sabes cómo hablarle. Puedes personalizar a los agentes de Antigravity para que entiendan tu contexto particular y actúen como expertos.",
+        "difficulty": "Difícil",
+        "xp_reward": 100,
+        "module_title": "Módulo de Prompting",
+        "steps": [
+            {
+                "id": 1,
+                "title": "Estructura de un Prompt",
+                "instruction": "Usa la fórmula: [Contexto + Acción + Formato]. Ej: 'Quiero crear un juego de escritorio usando pygame' o 'Crea una tabla en SQL para usuarios y haz un login con dashboard web simple'.",
+                "code_snippet": "Contexto: Eres un Ing. Senior\nAcción: Crea mi login web...\nFormato: Sin explicaciones, solo código."
+            },
+            {
+                "id": 2,
+                "title": "Personalizar el Agente",
+                "instruction": "Asegúrate de configurar los agentes (ej: Antigravity) dándole reglas directas de tu proyecto o un rol determinado, así no inventa código innecesario.",
+                "code_snippet": "/role Eres Arquitecto de Software"
+            },
+            {
+                "id": 3,
+                "title": "Ejecutar y Validar",
+                "instruction": "Ejecuta tu primer prompt complejo, recibe el 'boilerplate' (código base), pégalo en tus archivos de VSCode y pruébalo ejecutándolo en el entorno virtual.",
+                "code_snippet": "¡A programar!"
+            }
+        ]
+    },
+    4: {
+        "title": "Lvl 4: Misión de Despliegue Final",
+        "description": "El mundo debe ver tu creación. Sincroniza tus cambios locales con la red global desplegando tu repositorio en la nube.",
+        "difficulty": "Extremo",
+        "xp_reward": 150,
+        "module_title": "Módulo de Entrega",
+        "steps": [
+            {"id": 1, "title": "Asignar Ruta Remota", "instruction": "Conecta tu Git local con un repositorio de GitHub:", "code_snippet": "git remote add origin <URL-DEL-REPO>"},
+            {"id": 2, "title": "Subir Modificaciones", "instruction": "Empuja la rama principal a la nube (Push):", "code_snippet": "git push -u origin main"},
+            {"id": 3, "title": "Verificar Estado", "instruction": "Confirma que el árbol de control de versiones esté limpio:", "code_snippet": "git status"}
+        ]
+    }
+}
+
 @app.route("/tutorial/<int:module_id>")
 @token_required
 def view_tutorial(current_user, module_id):
-    with SessionLocal() as db:
-        user_db = db.query(User).get(current_user.id)
-        if module_id == 1:
-            return render_template("tutorial_entorno.html", user=user_db)
-        return redirect(url_for('view_module', module_id=module_id))
+    # Ya no utilizamos esto; consolidado en /entrenamiento_detalle/<module_id>
+    return redirect(url_for('view_module', module_id=module_id))
+
+@app.route("/api/verify/step/<int:module_id>/<int:step_id>", methods=["POST"])
+@token_required
+def verify_mission_step(current_user, module_id, step_id):
+    import json
+    
+    session_key = f'm{module_id}_completed_steps'
+    completed_steps = session.get(session_key, [])
+    if step_id not in completed_steps:
+        completed_steps.append(step_id)
+        session[session_key] = completed_steps
+        session.modified = True
+        
+    mission_def = MISSIONS_DEF.get(module_id, {})
+    steps_list = mission_def.get("steps", [])
+    
+    step = next((s for s in steps_list if s['id'] == step_id), None)
+    next_step = next((s for s in steps_list if s['id'] == step_id + 1), None)
+    
+    html = render_template("partials/step_success.html", step=step, next_step=next_step, module_id=module_id)
+    response = make_response(html)
+    
+    # Evento HX-Trigger para la terminal y progreso
+    default_msg = f"> Verificando Paso {step_id}... OK. [+10 XP]"
+    msg = step.get('terminal_msg', default_msg) if step else default_msg
+    
+    response.headers['HX-Trigger'] = json.dumps({"terminalUpdate": msg, "progressUpdate": len(completed_steps)})
+    
+    return response
+
+@app.route("/api/simulate/step/<int:module_id>/<int:step_id>", methods=["POST"])
+@token_required
+def simulate_mission_step(current_user, module_id, step_id):
+    import json
+    mission_def = MISSIONS_DEF.get(module_id, {})
+    steps_list = mission_def.get("steps", [])
+    step = next((s for s in steps_list if s['id'] == step_id), None)
+    
+    html = render_template("partials/step_simulate.html", step=step, module_id=module_id)
+    response = make_response(html)
+    
+    msg = step.get('simulate_msg', f"> Ejecutando simulación de paso {step_id}...")
+    response.headers['HX-Trigger'] = json.dumps({"terminalUpdate": msg})
+    
+    return response
 
 @app.route("/save-diagnostic", methods=["POST"])
 @token_required
@@ -577,7 +729,7 @@ def view_module(current_user, module_id):
     with SessionLocal() as db:
         user_db = db.query(User).get(current_user.id)
         module = db.query(Module).get(module_id)
-        if not module:
+        if not module or module_id not in MISSIONS_DEF:
             return redirect(url_for('training'))
         
         # Check access (prerequisite)
@@ -592,7 +744,54 @@ def view_module(current_user, module_id):
                 
         progress = db.query(UserModuleProgress).filter_by(user_id=current_user.id, module_id=module_id).first()
         status = progress.status if progress else "available"
-        return render_template("modulo_detalle.html", user=user_db, module=module, status=status)
+        
+        # Preparar data del motor de misiones
+        completed_steps = session.get(f'm{module_id}_completed_steps', [])
+        mission_data = dict(MISSIONS_DEF[module_id])
+        steps_copy = []
+        pass_unlocked = True
+        
+        for s in mission_data['steps']:
+            s_copy = dict(s)
+            s_copy['is_completed'] = s['id'] in completed_steps
+            s_copy['is_unlocked'] = pass_unlocked
+            pass_unlocked = s_copy['is_completed']
+            steps_copy.append(s_copy)
+            
+        mission_data['steps'] = steps_copy
+
+        return render_template("modulo_detalle.html", user=user_db, module=module, status=status, mission=mission_data)
+
+@app.route("/dev_reset")
+@token_required
+def dev_reset(current_user):
+    with SessionLocal() as db:
+        user_db = db.query(User).get(current_user.id)
+        if user_db:
+            # Wipe user state
+            user_db.xp = 0
+            user_db.coins = 0
+            user_db.is_polyglot = None
+            user_db.question_stock = 100
+            user_db.skill_backend = 0
+            user_db.skill_frontend = 0
+            user_db.skill_pm = 0
+            user_db.skill_git = 0
+            user_db.skill_ia = 0
+            user_db.skill_sql = 0
+            
+            # Wipe module progress
+            db.query(UserModuleProgress).filter(UserModuleProgress.user_id == user_db.id).delete()
+            db.commit()
+            
+            # Wipe session arrays mapping directly to Mission Engine
+            for m in [1, 2, 3, 4]:
+                session.pop(f'm{m}_completed_steps', None)
+            session.modified = True
+            
+        from flask import flash
+        flash("La sesión ha sido reseteada (Modo Developer).", "warning")
+        return redirect(url_for('dashboard'))
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)

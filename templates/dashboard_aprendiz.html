@@ -49,11 +49,11 @@
         </div>
     </header>
 
-    <!-- Centro de Entrenamiento (Ancho Completo) - The Dev's Odyssey Path -->
+    <!-- Inicia tu proyecto (Ancho Completo) - The Dev's Odyssey Path -->
     <section class="w-full z-10">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-bold flex items-center gap-2 text-[var(--text-header)]">
-                <i class="ph-fill ph-map-trifold text-[var(--accent-color)]"></i> Centro de Entrenamiento <span class="text-[var(--text-muted)] font-normal text-sm ml-2 hidden sm:inline">Tu ruta de evolución</span>
+                <i class="ph-fill ph-map-trifold text-[var(--accent-color)]"></i> Inicia tu proyecto <span class="text-[var(--text-muted)] font-normal text-sm ml-2 hidden sm:inline">Tu ruta de evolución</span>
             </h2>
         </div>
         
@@ -206,9 +206,9 @@
                 <div class="absolute left-9 top-10 bottom-10 w-[2px] bg-gradient-to-b from-[var(--accent-color)] via-[var(--border-color)] to-transparent z-0"></div>
 
                 {% set levels = [
-                    {'title': 'Lvl 1: Configuración', 'diff': 'Fácil', 'color': 'text-green-400', 'bg': 'bg-green-500/20', 'icon': 'ph-play', 'xp': 25, 'req': ''},
-                    {'title': 'Lvl 2: Fundamentos (Variables, Listas)', 'diff': 'Media', 'color': 'text-yellow-500', 'bg': 'bg-yellow-500/20', 'icon': 'ph-lock-key', 'xp': 50, 'req': 'Req: Lvl 1'},
-                    {'title': 'Lvl 3: Lógica Estructural (POO)', 'diff': 'Difícil', 'color': 'text-orange-500', 'bg': 'bg-orange-500/20', 'icon': 'ph-lock-key', 'xp': 100, 'req': 'Req: Lvl 2'}
+                    {'title': 'Lvl 1: Control de Versiones', 'diff': 'Fácil', 'color': 'text-green-400', 'bg': 'bg-green-500/20', 'icon': 'ph-play', 'xp': 50, 'req': ''},
+                    {'title': 'Lvl 2: Entorno Virtual', 'diff': 'Media', 'color': 'text-yellow-500', 'bg': 'bg-yellow-500/20', 'icon': 'ph-lock-key', 'xp': 50, 'req': 'Req: Lvl 1'},
+                    {'title': 'Lvl 3: Mi Primer Prompt', 'diff': 'Difícil', 'color': 'text-orange-500', 'bg': 'bg-orange-500/20', 'icon': 'ph-lock-key', 'xp': 100, 'req': 'Req: Lvl 2'}
                 ] %}
 
                 {% for i in range([modules|length, 3]|min) %}

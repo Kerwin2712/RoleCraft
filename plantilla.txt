@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoleCraft - The Dev's Odyssey</title>
+    <title>RoleCraft - Misión Activa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Simulación de HTMX para la plantilla -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
         :root {
-            /* Futuristic Dark Theme Base */
             --bg-color: #05050f;
             --accent-color: #00f0ff;
             --accent-glow: rgba(0, 240, 255, 0.4);
-            --danger-color: #ff0055;
-            --danger-glow: rgba(255, 0, 85, 0.4);
+            --success-color: #00ff88;
+            --success-glow: rgba(0, 255, 136, 0.4);
             --text-header: #ffffff;
             --text-muted: #8b949e;
             --glass-bg: rgba(10, 15, 30, 0.6);
@@ -24,9 +25,7 @@
             background-color: var(--bg-color);
             color: var(--text-header);
             font-family: 'Inter', system-ui, sans-serif;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(255, 0, 85, 0.05), transparent 25%);
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.05), transparent 50%);
             background-attachment: fixed;
         }
 
@@ -36,213 +35,152 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
             border-radius: 1rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         .shadow-neon { box-shadow: 0 0 15px var(--accent-glow); }
-        .shadow-neon-danger { box-shadow: 0 0 15px var(--danger-glow); }
+        .shadow-neon-success { box-shadow: 0 0 15px var(--success-glow); }
         
-        .text-accent { color: var(--accent-color); }
-        .text-muted { color: var(--text-muted); }
-        .border-accent { border-color: var(--accent-color); }
-
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-color); }
         ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        /* Step Line Connector */
+        .step-line::after {
+            content: '';
+            position: absolute;
+            left: 1.25rem; /* center of 2.5rem icon */
+            top: 2.5rem;
+            bottom: -1rem;
+            width: 2px;
+            background: var(--glass-border);
+            z-index: 0;
+        }
+        .step-line.active::after {
+            background: linear-gradient(to bottom, var(--accent-color), var(--glass-border));
+        }
+        .step-last::after { display: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased p-4 md:p-6 overflow-x-hidden">
+<body class="min-h-screen flex flex-col antialiased p-4 md:p-6">
 
-    <!-- Navbar / Top Status Bar -->
-    <header class="glass-panel w-full p-4 mb-6 flex justify-between items-center z-10">
+    <!-- Navbar Minimizada -->
+    <header class="w-full flex justify-between items-center mb-6 max-w-6xl mx-auto z-10">
+        <a href="/dashboard" class="flex items-center gap-2 text-muted hover:text-white transition-colors group">
+            <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-accent group-hover:shadow-neon transition-all">
+                <i class="ph ph-caret-left"></i>
+            </div>
+            <span class="text-sm font-bold tracking-wide uppercase">Volver al Dashboard</span>
+        </a>
         <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#00f0ff] to-[#0055ff] flex items-center justify-center font-bold text-black">
-                RC
-            </div>
-            <div>
-                <h1 class="text-lg font-bold uppercase tracking-wider">Aprendiz <span class="text-accent">#8492</span></h1>
-                <p class="text-xs text-muted">Lvl 1 • 0 XP / 1000 XP</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-6">
-            <div class="flex flex-col items-end">
-                <span class="text-xs text-muted uppercase tracking-widest">Stamina</span>
-                <div class="flex items-center gap-2">
-                    <i class="ph ph-lightning text-yellow-400 text-xl"></i>
-                    <span class="font-mono font-bold">100/100</span>
-                </div>
-            </div>
-            <!-- Botón Bypass: Prueba Técnica -->
-            <button class="hidden md:flex items-center gap-2 px-4 py-2 bg-transparent border border-[#ff0055] text-[#ff0055] rounded-lg hover:bg-[#ff0055]/10 shadow-neon-danger transition-all duration-300 group">
-                <i class="ph ph-warning-circle text-lg group-hover:animate-pulse"></i>
-                <span class="text-sm font-bold tracking-wide">TEST DE INFLEXIÓN</span>
-            </button>
+            <span class="text-xs text-accent font-mono border border-accent/30 bg-accent/10 px-3 py-1 rounded">
+                <i class="ph ph-lightning"></i> 100/100
+            </span>
         </div>
     </header>
 
-    <!-- Centro de Entrenamiento (Ancho Completo) - The Dev's Odyssey Path -->
-    <section class="w-full mb-8 z-10">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold flex items-center gap-2">
-                <i class="ph ph-map-trifold text-accent"></i> Centro de Entrenamiento <span class="text-muted font-normal text-sm ml-2">Tu ruta de evolución</span>
-            </h2>
-            <button class="md:hidden text-xs border border-[#ff0055] text-[#ff0055] px-3 py-1 rounded shadow-neon-danger">TEST TÉCNICO</button>
-        </div>
+    <!-- Main Content -->
+    <main class="flex-1 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-6 z-10">
         
-        <div class="glass-panel p-6 relative overflow-hidden">
-            <!-- Timeline Line -->
-            <div class="absolute top-1/2 left-0 w-full h-[2px] bg-white/5 -translate-y-1/2 z-0"></div>
+        <!-- Columna Izquierda: La Ruta de la Misión (2/3) -->
+        <section class="lg:col-span-2 flex flex-col gap-6">
             
-            <div class="relative z-10 flex justify-between items-center overflow-x-auto pb-4 hide-scrollbar gap-8">
+            <!-- Header de la Misión -->
+            <div class="glass-panel p-8 relative overflow-hidden border-l-4 border-l-accent">
+                <!-- Background Decoration -->
+                <i class="ph ph-terminal-window absolute -right-10 -bottom-10 text-9xl opacity-5 text-accent"></i>
                 
-                <!-- Node 1: Entorno (Active) -->
-                <div class="flex flex-col items-center min-w-[150px] group cursor-pointer">
-                    <div class="w-14 h-14 rounded-full border-2 border-accent bg-[#05050f] flex items-center justify-center shadow-neon mb-3 transition-transform duration-300 group-hover:scale-110">
-                        <i class="ph ph-terminal-window text-accent text-2xl"></i>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <div>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-accent mb-2 block">Módulo de Configuración</span>
+                        <h1 class="text-3xl font-bold mb-2">Lvl 1: Estación de Trabajo</h1>
+                        <p class="text-muted text-sm max-w-xl">
+                            Un verdadero desarrollador conoce sus herramientas. Tu misión es preparar el entorno local para que podamos comunicarnos. Sigue los protocolos y verifica tu conexión.
+                        </p>
                     </div>
-                    <span class="text-sm font-bold text-center">Configuración</span>
-                    <span class="text-xs text-muted text-center mt-1">VSCode & Entorno</span>
+                    <div class="flex flex-col items-end gap-2">
+                        <span class="text-xs uppercase font-bold tracking-wider bg-green-500/20 text-green-400 px-2 py-1 rounded border border-green-500/20">Fácil</span>
+                        <span class="text-sm text-accent font-mono flex items-center gap-1 font-bold"><i class="ph ph-star"></i> +30 XP</span>
+                    </div>
                 </div>
 
-                <!-- Node 2: Evaluación Estratégica (Locked) -->
-                <div class="flex flex-col items-center min-w-[150px] group opacity-60">
-                    <div class="w-14 h-14 rounded-full border-2 border-white/20 bg-[#05050f] flex items-center justify-center mb-3">
-                        <i class="ph ph-git-branch text-white/50 text-2xl"></i>
+                <!-- Progress Bar -->
+                <div class="mt-6 relative z-10">
+                    <div class="flex justify-between text-xs font-bold mb-2">
+                        <span class="text-muted uppercase tracking-wider">Progreso de Sincronización</span>
+                        <span class="text-accent font-mono" id="progress-text">0 / 3 Pasos</span>
                     </div>
-                    <span class="text-sm font-bold text-center">Alineación</span>
-                    <span class="text-xs text-muted text-center mt-1">Descubre tu Rol</span>
-                </div>
-
-                <!-- Node 3: Squad Week (Locked) -->
-                <div class="flex flex-col items-center min-w-[150px] group opacity-60">
-                    <div class="w-14 h-14 rounded-full border-2 border-white/20 bg-[#05050f] flex items-center justify-center mb-3">
-                        <i class="ph ph-users-three text-white/50 text-2xl"></i>
+                    <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div class="h-full bg-accent w-[10%] shadow-neon transition-all duration-500" id="progress-bar"></div>
                     </div>
-                    <span class="text-sm font-bold text-center">Squad Week</span>
-                    <span class="text-xs text-muted text-center mt-1">Colaboración IA</span>
                 </div>
-
-                <!-- Node 4: Proyecto Final (Locked) -->
-                <div class="flex flex-col items-center min-w-[150px] group opacity-60">
-                    <div class="w-14 h-14 rounded-full border-2 border-white/20 bg-[#05050f] flex items-center justify-center mb-3">
-                        <i class="ph ph-rocket-launch text-white/50 text-2xl"></i>
-                    </div>
-                    <span class="text-sm font-bold text-center">Despliegue</span>
-                    <span class="text-xs text-muted text-center mt-1">Entrega de Valor</span>
-                </div>
-
             </div>
 
-            <!-- Terminal Estratégica Interactiva (Simulación HTMX) -->
-            <div class="mt-6 bg-[#030308] border border-white/10 rounded-lg p-4 font-mono text-sm relative">
-                <div class="absolute top-2 right-4 flex gap-2">
-                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
-                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
-                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                </div>
-                <div class="text-muted mb-2">> Inicializando protocolo de asignación...</div>
-                <div class="text-accent mb-4">> ¿Qué prefieres construir en tu Squad Week?</div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <button class="border border-white/10 bg-white/5 hover:bg-white/10 p-3 rounded text-left transition-colors">
-                        <span class="text-[#00f0ff]">[1]</span> La lógica y bases de datos.
-                    </button>
-                    <button class="border border-white/10 bg-white/5 hover:bg-white/10 p-3 rounded text-left transition-colors">
-                        <span class="text-[#00f0ff]">[2]</span> La interfaz y experiencia de usuario.
-                    </button>
-                    <button class="border border-white/10 bg-white/5 hover:bg-white/10 p-3 rounded text-left transition-colors">
-                        <span class="text-[#00f0ff]">[3]</span> La coordinación del equipo y entregas.
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Grid: Matriz de Habilidades & Squad Status -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 z-10">
-        
-        <!-- Matriz de Habilidades Central (Ocupa 2 columnas en Desktop) -->
-        <section class="lg:col-span-2 glass-panel p-6 flex flex-col">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-bold flex items-center gap-2">
-                    <i class="ph ph-hexagon text-accent"></i> Matriz de Habilidades
+            <!-- Pasos Interactivos (Checklist Gamificado) -->
+            <div class="glass-panel p-6">
+                <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i class="ph ph-check-square-offset text-accent"></i> Protocolos Requeridos
                 </h3>
-                <button class="text-xs text-muted hover:text-white transition-colors flex items-center gap-1">
-                    <i class="ph ph-info"></i> Info Roles
-                </button>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                
-                <!-- Verticales (Especialidad) -->
-                <div>
-                    <h4 class="text-xs tracking-widest text-muted uppercase mb-4 border-b border-white/10 pb-2">Verticales (Core)</h4>
-                    
-                    <div class="mb-5 group cursor-pointer">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Backend Dev</span>
-                            <span class="font-mono text-muted">0%</span>
+                <!-- Paso 1: Activo -->
+                <div class="relative step-line active pb-8">
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 rounded-full bg-[#05050f] border-2 border-accent flex-shrink-0 flex items-center justify-center shadow-neon relative z-10">
+                            <span class="font-bold text-accent text-sm">1</span>
                         </div>
-                        <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full bg-[#00f0ff] rounded-full w-0 group-hover:shadow-neon transition-all duration-500" style="width: 5%"></div>
-                        </div>
-                    </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-white mb-1">Instalar Entorno Virtual</h4>
+                            <p class="text-xs text-muted mb-3">
+                                Python utiliza entornos virtuales para no contaminar tu sistema. Abre tu terminal en VSCode (Ctrl+Shift+`) y ejecuta el siguiente comando:
+                            </p>
+                            
+                            <!-- Snippet de Código -->
+                            <div class="bg-black/60 border border-white/10 rounded p-3 mb-3 flex justify-between items-center group">
+                                <code class="font-mono text-xs text-green-400">python -m venv env</code>
+                                <button class="text-muted hover:text-white transition-colors" title="Copiar comando">
+                                    <i class="ph ph-copy"></i>
+                                </button>
+                            </div>
 
-                    <div class="mb-5 group cursor-pointer">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Frontend Dev</span>
-                            <span class="font-mono text-muted">0%</span>
-                        </div>
-                        <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full bg-[#00f0ff] rounded-full w-0 group-hover:shadow-neon transition-all duration-500" style="width: 2%"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-5 group cursor-pointer">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Product Manager</span>
-                            <span class="font-mono text-muted">0%</span>
-                        </div>
-                        <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full bg-[#00f0ff] rounded-full w-0 group-hover:shadow-neon transition-all duration-500" style="width: 0%"></div>
+                            <!-- Botón de Acción HTMX -->
+                            <button 
+                                hx-post="/api/verify/step1" 
+                                hx-indicator="#terminal-loader"
+                                hx-swap="outerHTML"
+                                class="bg-accent/10 border border-accent text-accent hover:bg-accent hover:text-black px-4 py-2 rounded text-xs font-bold transition-all flex items-center gap-2">
+                                <i class="ph ph-radar"></i> EJECUTAR DIAGNÓSTICO
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Horizontales (Supervivencia & Multiplicadores) -->
-                <div>
-                    <h4 class="text-xs tracking-widest text-muted uppercase mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
-                        Horizontales (Mods) <i class="ph ph-lightning text-yellow-400"></i>
-                    </h4>
-                    
-                    <div class="mb-5 group cursor-pointer relative">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="flex items-center gap-2">Git / GitHub <span class="bg-yellow-400/20 text-yellow-400 text-[10px] px-1.5 rounded">1.2x</span></span>
-                            <span class="font-mono text-accent">15%</span>
+                <!-- Paso 2: Bloqueado -->
+                <div class="relative step-line pb-8 opacity-50">
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 rounded-full bg-[#05050f] border-2 border-white/20 flex-shrink-0 flex items-center justify-center relative z-10">
+                            <i class="ph ph-lock-key text-white/50 text-sm"></i>
                         </div>
-                        <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full bg-yellow-400 rounded-full shadow-[0_0_10px_rgba(250,204,21,0.5)] transition-all duration-500" style="width: 15%"></div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-muted mb-1">Activar el Entorno</h4>
+                            <p class="text-xs text-muted mb-3">
+                                Completa el paso anterior para desbloquear las instrucciones de activación de Windows/Mac.
+                            </p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="mb-5 group cursor-pointer">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Ingeniería Prompts (IA)</span>
-                            <span class="font-mono text-muted">0%</span>
+                <!-- Paso 3: Bloqueado -->
+                <div class="relative step-last opacity-50">
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 rounded-full bg-[#05050f] border-2 border-white/20 flex-shrink-0 flex items-center justify-center relative z-10">
+                            <i class="ph ph-lock-key text-white/50 text-sm"></i>
                         </div>
-                        <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full bg-yellow-400 rounded-full w-0 transition-all duration-500" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-5 group cursor-pointer">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>SQL / Datos</span>
-                            <span class="font-mono text-muted">0%</span>
-                        </div>
-                        <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full bg-yellow-400 rounded-full w-0 transition-all duration-500" style="width: 0%"></div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-muted mb-1">Instalar Dependencias</h4>
+                            <p class="text-xs text-muted mb-3">
+                                Descarga los requerimientos del núcleo (requirements.txt).
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -250,40 +188,37 @@
             </div>
         </section>
 
-        <!-- Sidebar: Status de Squad & Misión Activa -->
-        <section class="glass-panel p-6 flex flex-col">
-            <h3 class="text-lg font-bold flex items-center gap-2 mb-6 text-[#00f0ff]">
-                <i class="ph ph-target"></i> Misión Activa
-            </h3>
+        <!-- Columna Derecha: Terminal del Sistema (1/3) -->
+        <section class="glass-panel flex flex-col h-[500px] lg:h-auto overflow-hidden sticky top-6 border-t-4 border-t-white/10">
+            <!-- Terminal Header -->
+            <div class="bg-black/40 p-3 border-b border-white/10 flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                <span class="text-xs text-muted font-mono ml-2">antigravity_daemon.exe</span>
+            </div>
             
-            <div class="bg-[#030308]/60 border border-white/5 rounded-xl p-4 mb-6 flex-1 border-l-2 border-l-accent">
-                <h4 class="font-bold mb-2">Setup Inicial del Sistema</h4>
-                <p class="text-sm text-muted mb-4 line-clamp-3">
-                    Antes de integrarte a un Squad, debes demostrar que tu estación de trabajo está lista. Configura VSCode, instala Python y conecta tu repositorio.
-                </p>
-                <button class="w-full py-2.5 bg-accent/10 border border-accent text-accent hover:bg-accent hover:text-black hover:shadow-neon font-bold rounded transition-all duration-300">
-                    CONTINUAR MISIÓN
-                </button>
+            <!-- Terminal Body -->
+            <div class="p-4 font-mono text-xs flex-1 overflow-y-auto bg-[#030308] text-muted space-y-2">
+                <p>> Inicializando conexión con Agente...</p>
+                <p>> Analizando <span class="text-yellow-400">Aprendiz #8492</span>...</p>
+                <p class="text-accent">> Estado: Esperando verificación de entorno local.</p>
+                <p>> Escuchando peticiones en puerto 8000...</p>
+                
+                <!-- Loader HTMX target -->
+                <div id="terminal-loader" class="htmx-indicator flex items-center gap-2 text-[#00f0ff] mt-4">
+                    <i class="ph ph-spinner animate-spin"></i> Analizando telemetría...
+                </div>
             </div>
 
-            <div>
-                <h4 class="text-xs tracking-widest text-muted uppercase mb-4">Estado del Squad</h4>
-                <div class="border border-white/5 border-dashed rounded-lg p-6 text-center text-muted">
-                    <i class="ph ph-users-three text-3xl mb-2 opacity-50"></i>
-                    <p class="text-sm">No estás en ningún Squad.</p>
-                    <p class="text-xs mt-1">Completa el "Test de Inflexión" o la "Alineación" para buscar grupo.</p>
-                </div>
+            <!-- Terminal Footer / Final Action -->
+            <div class="p-4 bg-black/40 border-t border-white/10">
+                <button disabled class="w-full bg-white/5 border border-white/10 text-white/30 py-3 rounded text-sm font-bold uppercase tracking-widest cursor-not-allowed transition-all">
+                    Misión Bloqueada
+                </button>
             </div>
         </section>
 
-    </div>
-
-    <!-- Floating Action Button (Temas) -->
-    <div class="fixed bottom-6 right-6 z-50">
-        <button class="w-12 h-12 rounded-full glass-panel flex items-center justify-center hover:scale-110 hover:border-[#00f0ff] transition-all shadow-neon group">
-            <i class="ph ph-palette text-xl text-white group-hover:text-[#00f0ff]"></i>
-        </button>
-    </div>
-
+    </main>
 </body>
 </html>

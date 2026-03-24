@@ -240,8 +240,12 @@
         <div>
             {% if user %}
             <span class="text-muted">Logueado como: <span class="text-[var(--text-header)] font-bold">{{ user.username }}</span></span>
+            <a href="{{ url_for('dev_reset') }}" title="Resetear Sesión (Dev Mode)"
+                class="ml-2 px-4 py-2 rounded-md bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/40 border border-yellow-500/30 transition-colors duration-300">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+            </a>
             <a href="{{ url_for('logout') }}"
-                class="px-4 py-2 rounded-md bg-red-600/20 text-red-400 hover:bg-red-600/40 border border-red-500/30 transition-colors duration-300">Salir</a>
+                class="ml-2 px-4 py-2 rounded-md bg-red-600/20 text-red-400 hover:bg-red-600/40 border border-red-500/30 transition-colors duration-300">Salir</a>
             {% endif %}
         </div>
     </nav>
