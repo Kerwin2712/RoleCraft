@@ -4,6 +4,7 @@
 - **docs**: Rediseño completo del `README.md` estructurándolo profesionalmente para uso como portafolio en GitHub (Arquitectura, Features, Instalación).
 - **docs**: Creación y formateo del Manual de Identidad Visual y UX (`ui_graphics.md`), definiendo la estética Neo-Cyberpunk, componentes clave y reglas de UX.
 - **feat/ui**: Rediseño inmersivo completo de  `dashboard_aprendiz.html` implementando la arquitectura visual descrita en el manual. Se reemplazaron colores fijos oscuros por variables modulares que respetan el contraste en el modo claro. Se añadió la Terminal Interactiva HTMX de asignación de roles y la barra superior de status.
+- **feat/ui**: Reemplazo del "Panel Operativo" estático en el Sidebar de `dashboard_aprendiz.html` por un **Quest Log** gamificado de progreso dinámico (Niveles escroleables estilo RPG y acceso directo con alerta de peligro a la Prueba de Inflexión - Boss Fight).
 
 ## 20 de Marzo de 2026 - Rediseño del Módulo 1 y Filtro de Entorno
 - **feat**: Implementación del Módulo 1 como "Misión de Configuración de Entorno" (VSCode, Python, Antigravity).
