@@ -1,264 +1,315 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="w-full max-w-7xl mx-auto flex flex-col gap-8">
-    <!-- Section: Centro de Entrenamiento (Top Body) -->
-    <div class="glass-panel p-8 rounded-3xl flex flex-col gap-8 border-l-4 border-[var(--accent-color)] shadow-accent">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-                <h1 class="text-3xl font-black text-[var(--text-header)] uppercase tracking-tighter">Centro de Entrenamiento</h1>
-                <p class="text-muted mt-2">Mapa de misiones y progreso de aprendizaje.</p>
+<!-- Carga dinámica de iconos Phosphor exclusivos para la nueva estética -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<style>
+    /* CSS Local Customizations (Glassmorphism Neo-Cyberpunk) */
+    :root {
+        --danger-color: #ff0055;
+        --danger-glow: rgba(255, 0, 85, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.08);
+    }
+    .shadow-neon-danger { box-shadow: 0 0 15px var(--danger-glow); }
+    .border-accent { border-color: var(--accent-color); }
+    .text-accent { color: var(--accent-color); }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<div class="w-full max-w-7xl mx-auto flex flex-col antialiased overflow-x-hidden gap-6">
+
+    <!-- Header Status Bar (Reemplazo táctico in-body de navbar admin) -->
+    <header class="glass-panel w-full p-4 flex flex-col md:flex-row justify-between items-center gap-4 z-10 rounded-2xl border-t-[1px] border-t-[var(--accent-color)]">
+        <div class="flex items-center gap-4 w-full md:w-auto">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-[var(--accent-color)] to-[var(--secondary-color)] flex items-center justify-center font-bold text-[var(--bg-color)] border border-[var(--border-color)] shadow-accent shrink-0">
+                RC
             </div>
-            
-            <div class="w-full md:w-64">
-                <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                    <span class="text-muted">Progreso hacia Git</span>
-                    <span class="text-[var(--accent-color)]">{{ user.xp }} / {{ min_xp_git }} XP</span>
-                </div>
-                <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/10">
-                    <div class="h-full bg-gradient-to-r from-[var(--accent-color)] to-[var(--secondary-color)] shadow-accent" 
-                         style="width: {{ [ (user.xp / min_xp_git * 100), 100 ] | min }}%"></div>
-                </div>
+            <div>
+                <h1 class="text-lg font-bold uppercase tracking-wider text-[var(--text-header)]">{{ user.username }} <span class="text-[var(--accent-color)]">#{{ user.id | default('000') }}</span></h1>
+                <p class="text-xs font-mono text-[var(--text-muted)]">LVL 1 • {{ user.xp }} XP / {{ (user.xp // 1000 + 1) * 1000 }} XP</p>
             </div>
         </div>
+        
+        <div class="flex items-center justify-between w-full md:w-auto gap-6">
+            <div class="flex flex-col items-end">
+                <span class="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest">Stamina / Energy</span>
+                <div class="flex items-center gap-2 mt-1">
+                    <i class="ph-fill ph-lightning text-yellow-400 text-xl font-bold drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"></i>
+                    <span class="font-mono font-bold text-[var(--text-header)]">{{ user.question_stock | default('100') }}/100</span>
+                </div>
+            </div>
+            <!-- Test de Inflexión (Atajo sin bloqueo - Redirección Inmediata) -->
+            <a href="{{ url_for('diagnostic') }}" class="flex items-center gap-2 px-5 py-2.5 bg-[#ff0055]/10 border border-[#ff0055] text-[#ff0055] rounded-lg hover:bg-[#ff0055]/20 shadow-[0_0_15px_rgba(255,0,85,0.2)] hover:shadow-neon-danger transition-all duration-300 group">
+                <i class="ph-bold ph-warning-circle text-xl group-hover:animate-pulse"></i>
+                <span class="text-sm font-bold tracking-widest hidden sm:inline">TEST DE INFLEXIÓN</span>
+                <span class="text-sm font-bold tracking-widest sm:hidden">TEST</span>
+            </a>
+        </div>
+    </header>
 
-        <div class="relative pl-2 md:pl-4">
-            <!-- Connecting Line -->
-            <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[var(--accent-color)] to-transparent opacity-20 hidden md:block"></div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Centro de Entrenamiento (Ancho Completo) - The Dev's Odyssey Path -->
+    <section class="w-full z-10">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold flex items-center gap-2 text-[var(--text-header)]">
+                <i class="ph-fill ph-map-trifold text-[var(--accent-color)]"></i> Centro de Entrenamiento <span class="text-[var(--text-muted)] font-normal text-sm ml-2 hidden sm:inline">Tu ruta de evolución</span>
+            </h2>
+        </div>
+        
+        <div class="glass-panel px-6 py-8 relative overflow-hidden rounded-2xl">
+            <!-- Timeline Line Backend -->
+            <div class="absolute top-[45%] left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[var(--border-color)] to-transparent -translate-y-1/2 z-0 hidden lg:block"></div>
+            
+            <div class="relative z-10 flex lg:justify-around items-center overflow-x-auto pb-4 hide-scrollbar gap-8">
+                
+                <!-- Generación Dinámica del Roadmap con Jinja2 -->
+                {% set module_icons = ['ph-terminal-window', 'ph-git-branch', 'ph-users-three', 'ph-rocket-launch'] %}
+                {% set module_subtitles = ['Entorno Técnico', 'Alineación', 'Colaboración IA', 'Entrega de Soluciones'] %}
+                
                 {% for module in modules %}
-                <div class="relative flex items-start gap-4 group">
-                    <!-- Node Indicator -->
-                    <div class="z-10 w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-500
+                <div class="flex flex-col items-center min-w-[150px] group cursor-pointer transition-all hover:-translate-y-1 
+                    {% if module.status == 'locked' %} opacity-50 grayscale hover:grayscale-0 hover:opacity-100 {% endif %}">
+                    
+                    <div class="relative w-16 h-16 rounded-full border-[3px] 
+                        {% if module.status == 'completed' %} border-[var(--secondary-color)] shadow-[0_0_20px_var(--secondary-color)] bg-[var(--bg-color)]
+                        {% elif module.status == 'available' %} border-[var(--accent-color)] shadow-accent bg-[var(--bg-color)] group-hover:scale-110 transition-transform duration-300
+                        {% else %} border-[var(--border-color)] bg-[var(--bg-color)]/50 {% endif %} 
+                        flex items-center justify-center mb-3">
+                        
                         {% if module.status == 'completed' %}
-                            bg-[var(--accent-color)] shadow-[0_0_15px_var(--accent-color)] text-[var(--bg-color)]
+                            <i class="ph-bold ph-check text-[var(--secondary-color)] text-2xl drop-shadow-[0_0_8px_var(--secondary-color)]"></i>
                         {% elif module.status == 'available' %}
-                            bg-white/10 border-2 border-[var(--accent-color)] text-[var(--accent-color)] shadow-accent
+                            <i class="ph-fill {{ module_icons[loop.index0 % 4] }} text-[var(--accent-color)] text-2xl animate-pulse drop-shadow-[0_0_8px_var(--accent-color)]"></i>
                         {% else %}
-                            bg-black/40 border border-white/5 text-gray-600 grayscale
-                        {% endif %}">
-                        {% if module.status == 'completed' %}
-                            <i class="fa-solid fa-check text-xl"></i>
-                        {% elif module.status == 'available' %}
-                            <i class="fa-solid fa-play text-lg ml-0.5"></i>
-                        {% else %}
-                            <i class="fa-solid fa-lock text-lg"></i>
+                            <i class="ph-fill ph-lock-key text-[var(--text-muted)] text-2xl"></i>
                         {% endif %}
                     </div>
-
-                    <!-- Module Card -->
-                    <div class="flex-grow glass-panel p-5 rounded-2xl transition-all duration-300 relative overflow-hidden
-                        {% if module.status == 'locked' %} opacity-60 backdrop-blur-md {% else %} hover:translate-y-[-5px] {% endif %}">
-                        
-                        {% if module.status == 'locked' %}
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
-                            <span class="text-[10px] uppercase font-bold tracking-widest text-white/40">Bloqueado</span>
-                        </div>
+                    
+                    <span class="text-sm font-bold text-center text-[var(--text-header)]">{{ module.title }}</span>
+                    <span class="text-xs text-[var(--text-muted)] text-center mt-1">{{ module_subtitles[loop.index0 % 4] | default('Desafío ' ~ loop.index) }}</span>
+                    
+                    {% if module.status != 'locked' %}
+                        {% if module.id == 1 and module.status != 'completed' %}
+                            <a href="{{ url_for('view_tutorial', module_id=module.id) }}" class="mt-3 text-[10px] uppercase font-bold text-[var(--bg-color)] bg-[var(--accent-color)] hover:bg-[var(--text-header)] hover:text-[var(--bg-color)] px-4 py-1.5 rounded-full transition-colors flex items-center gap-1 shadow-[0_0_15px_var(--accent-color)]">INICIAR <i class="ph-bold ph-play"></i></a>
+                        {% else %}
+                            <a href="{{ url_for('view_module', module_id=module.id) }}" class="mt-3 text-[10px] uppercase font-bold text-[var(--secondary-color)] bg-[var(--secondary-color)]/10 hover:bg-[var(--secondary-color)] hover:text-white px-4 py-1.5 border border-[var(--secondary-color)] rounded-full transition-colors flex items-center gap-1">VER <i class="ph-bold ph-eye"></i></a>
                         {% endif %}
-
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-sm font-bold text-[var(--text-header)]">{{ module.title }}</h3>
-                        </div>
-                        
-                        <div class="flex justify-between items-center mt-4">
-                            {% if module.status != 'locked' %}
-                                {% if module.id == 1 and module.status != 'completed' %}
-                                    <a href="{{ url_for('view_tutorial', module_id=module.id) }}" 
-                                       class="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 uppercase">
-                                        EVALUARSE <i class="fa-solid fa-circle-play ml-1"></i>
-                                    </a>
-                                {% else %}
-                                    <a href="{{ url_for('view_module', module_id=module.id) }}" 
-                                       class="text-[10px] font-bold text-[var(--accent-color)] hover:text-[var(--secondary-color)] uppercase">
-                                        VER <i class="fa-solid fa-chevron-right ml-1"></i>
-                                    </a>
-                                {% endif %}
-                            {% else %}
-                                <span class="text-[9px] text-gray-500 uppercase">Locked</span>
-                            {% endif %}
-                            <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-white/5 text-[var(--accent-color)]">+{{ module.xp }} XP</span>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
+
+            </div>
+
+            <!-- Terminal Estratégica Interactiva (HTMX Trigger) -->
+            <div id="matrix_container" class="mt-8 bg-[var(--bg-color)]/80 border border-[var(--border-color)] rounded-xl p-5 font-mono text-sm relative shadow-inner">
+                <div class="absolute top-4 right-5 flex gap-2">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-500/80 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80 shadow-[0_0_5px_rgba(234,179,8,0.8)]"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-green-500/80 shadow-[0_0_5px_rgba(34,197,94,0.8)]"></div>
+                </div>
+                <!-- Interactive Console -->
+                <div class="text-[var(--text-muted)] mb-3">> root@rolecraft:~# ./init_alignment.sh</div>
+                <div class="text-[var(--text-muted)] mb-3">> Inicializando protocolo de alineación técnica...</div>
+                <div class="text-[var(--accent-color)] font-bold mb-5 drop-shadow-[0_0_5px_var(--accent-glow)]">> ¿En qué área técnica aportas más a tu futura Squad?</div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button hx-post="/api/set_affinity" hx-vals='{"role":"backend"}' hx-target="#matrix_container" class="border border-[var(--border-color)] bg-[var(--card-bg)] hover:bg-[var(--border-color)] p-4 rounded-lg text-left transition-all text-[var(--text-main)] group cursor-pointer shadow-md hover:border-[var(--accent-color)]">
+                        <span class="text-[var(--text-muted)] group-hover:text-[var(--accent-color)] font-bold transition-colors">[1]</span> 
+                        <span class="text-[var(--text-muted)] group-hover:text-[var(--text-header)] transition-colors ml-1">Bases de datos, control y lógica server-side (Backend).</span>
+                    </button>
+                    <button hx-post="/api/set_affinity" hx-vals='{"role":"frontend"}' hx-target="#matrix_container" class="border border-[var(--border-color)] bg-[var(--card-bg)] hover:bg-[var(--border-color)] p-4 rounded-lg text-left transition-all text-[var(--text-main)] group cursor-pointer shadow-md hover:border-[var(--accent-color)]">
+                        <span class="text-[var(--text-muted)] group-hover:text-[var(--accent-color)] font-bold transition-colors">[2]</span> 
+                        <span class="text-[var(--text-muted)] group-hover:text-[var(--text-header)] transition-colors ml-1">Interfaces reactivas, UX y consumo de APIs (Frontend).</span>
+                    </button>
+                    <button hx-post="/api/set_affinity" hx-vals='{"role":"pm"}' hx-target="#matrix_container" class="border border-[var(--border-color)] bg-[var(--card-bg)] hover:bg-[var(--border-color)] p-4 rounded-lg text-left transition-all text-[var(--text-main)] group cursor-pointer shadow-md hover:border-[var(--accent-color)]">
+                        <span class="text-[var(--text-muted)] group-hover:text-[var(--accent-color)] font-bold transition-colors">[3]</span> 
+                        <span class="text-[var(--text-muted)] group-hover:text-[var(--text-header)] transition-colors ml-1">Arquitectura humana, agilidad y visión (Project).</span>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Layout: Dos columnas para el resto -->
-    <div class="flex flex-col lg:flex-row gap-8">
-        <!-- Sidebar: Perfil del Aprendiz -->
-        <div class="glass-panel w-full lg:w-1/3 p-6 rounded-2xl flex flex-col gap-6">
-            <div class="text-center">
-                <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent-color)] to-[var(--text-main)]">
-                    {{ user.username }}
-                </h2>
-                <p class="text-muted mt-1">Nivel: Aprendiz</p>
+    <!-- Main Grid: Matriz de Habilidades & Operaciones -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 z-10">
+        
+        <!-- Matriz de Habilidades Central (Ocupa 2/3 en LG+) -->
+        <section class="lg:col-span-2 glass-panel p-8 flex flex-col rounded-2xl border-l-[3px] border-[var(--accent-color)]">
+            <div class="flex justify-between items-center mb-8 border-b border-[var(--border-color)] pb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2 text-[var(--text-header)] tracking-wide">
+                    <i class="ph-fill ph-hexagon text-[var(--accent-color)] text-2xl drop-shadow-[0_0_8px_var(--accent-glow)]"></i> Matriz de Habilidades
+                </h3>
+                <button class="text-[10px] font-bold tracking-widest uppercase text-[var(--accent-color)] hover:text-[var(--text-header)] shrink-0 px-3 py-1.5 border border-[var(--accent-color)]/30 rounded-full transition-colors flex items-center gap-1.5">
+                    <i class="ph-bold ph-info"></i> Info de Roles
+                </button>
             </div>
 
-            <div
-                class="bg-black/30 p-4 rounded-xl border border-[var(--border-color)] flex flex-col items-center justify-center relative shadow-[inset_0_0_20px_var(--glow-effect)]">
-                <div class="text-3xl font-black text-neon">{{ user.xp }} XP</div>
-                <div class="text-sm text-muted mt-1">Experiencia Total</div>
-                <div class="absolute -top-3 -right-3 text-2xl">🥇</div>
-            </div>
-
-            <div class="p-3 bg-accent-soft border border-accent-soft rounded-lg text-center">
-                <p class="text-sm text-gray-300">Grupo Actual</p>
-                <p class="text-lg font-bold text-[var(--text-header)]">
-                    {% if user.group_id %}#{{ user.group_id }}{% else %}Ninguno{% endif %}
-                </p>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-semibold text-[var(--text-header)] mb-4 border-b border-[var(--border-color)] pb-2">Matriz de Habilidades</h3>
-                <div class="space-y-6">
-                    <!-- Sección: Especialidades -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-muted mb-4 flex justify-between items-center">
-                            <span>Especialidad</span>
-                        </h3>
-                        <div class="space-y-4">
-                            {% macro skill_bar(name, xp, role_key, is_vertical=True) %}
-                            <div class="cursor-pointer group/skill" onclick="openRoleModal('{{ role_key }}')">
-                                <div class="flex justify-between text-xs mb-1 items-center">
-                                    <span class="text-[var(--text-main)] opacity-90 group-hover/skill:text-[var(--accent-color)] transition-colors">{{ name }}</span>
-                                    <span class="text-[var(--accent-color)]">{{ xp }} XP</span>
-                                </div>
-                                <div class="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
-                                    {% set percentage = xp if xp <= 100 else 100 %}
-                                    <div class="h-1.5 rounded-full bg-[var(--accent-color)] shadow-accent transition-all duration-1000"
-                                         style="width: {{ percentage }}%;"></div>
-                                </div>
-                            </div>
-                            {% endmacro %}
-
-                            {{ skill_bar('Backend (Python)', user.skill_backend, 'backend') }}
-                            {{ skill_bar('Frontend', user.skill_frontend, 'frontend') }}
-                            {{ skill_bar('Project Manager', user.skill_pm, 'pm') }}
-                        </div>
+            <!-- Macros de Jinja adaptadas al nuevo look -->
+            {% macro gui_skill_bar(name, xp, role_key, vertical=True) %}
+                {% set percentage = xp if xp <= 100 else 100 %}
+                {% set color_var = 'var(--accent-color)' if vertical else '#facc15' %}
+                {% set hover_shadow = 'shadow-[0_0_15px_var(--accent-color)]' if vertical else 'shadow-[0_0_15px_rgba(250,204,21,0.5)]' %}
+                
+                <div class="mb-6 group cursor-pointer" onclick="openRoleModal('{{ role_key }}')">
+                    <div class="flex justify-between text-sm mb-2 items-end">
+                        <span class="text-[var(--text-header)] font-medium group-hover:text-[var(--accent-color)] transition-colors">{{ name }}</span>
+                        <span class="font-mono text-xs text-[var(--text-muted)] opacity-80" style="color: {{ color_var }}">{{ xp }} XP</span>
                     </div>
-
-                    <!-- Sección: Supervivencia -->
-                    <div>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-muted mb-4 flex justify-between items-center">
-                            <span>Supervivencia</span>
-                        </h3>
-                        <div class="space-y-4">
-                            {{ skill_bar('Git & GitHub', user.skill_git, 'git') }}
-                            {{ skill_bar('Environment Mastery (IA)', user.skill_ia, 'ia') }}
-                            {{ skill_bar('SQL & Data Foundations', user.skill_sql, 'sql') }}
+                    <div class="w-full h-2 bg-[var(--bg-color)]/50 rounded-full overflow-hidden border border-[var(--border-color)] relative">
+                        <div class="h-full rounded-full w-0 group-hover:{{ hover_shadow }} transition-all duration-1000 ease-out absolute left-0 top-0" 
+                             style="width: {{ percentage }}%; background-color: {{ color_var }};"
+                             data-width="{{ percentage }}">
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Test Button -->
-            <div class="mt-4">
-                <a href="{{ url_for('diagnostic') }}" 
-                   class="flex items-center justify-center gap-3 p-4 rounded-xl bg-gradient-to-r from-[var(--accent-color)] to-[var(--secondary-color)] text-[var(--bg-color)] font-black uppercase tracking-widest shadow-accent hover:scale-[1.05] transition-all">
-                    <i class="fa-solid fa-stethoscope text-xl"></i>
-                    <span>TEST DIAGNÓSTICO</span>
-                </a>
-            </div>
-        </div>
+            {% endmacro %}
 
-        <!-- Main Content: Matchmaking -->
-        <div class="w-full lg:w-2/3 flex flex-col gap-6">
-            <div class="glass-panel p-6 rounded-2xl flex justify-between items-center border-l-4 border-[var(--secondary-color)]">
-                <h2 class="text-2xl font-bold">Módulos de Misión <span class="text-muted text-lg font-normal ml-2">Matchmaking</span></h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {% for grupo in groups %}
-                {% include "components/group_card.html" %}
-                {% else %}
-                <div class="col-span-full glass-panel p-8 text-center rounded-2xl text-gray-400">
-                    No hay grupos disponibles en este momento.
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-14 gap-y-4">
+                
+                <!-- Verticales (Especialidad) -->
+                <div>
+                    <h4 class="text-[10px] font-black tracking-widest text-[var(--text-muted)] uppercase mb-6 border-b border-[var(--border-color)] pb-2">Verticales (Especialidad)</h4>
+                    
+                    {{ gui_skill_bar('Backend Dev (Python)', user.skill_backend, 'backend', True) }}
+                    {{ gui_skill_bar('Frontend Dev (Web)', user.skill_frontend, 'frontend', True) }}
+                    {{ gui_skill_bar('Project / Product Manager', user.skill_pm, 'pm', True) }}
                 </div>
-                {% endfor %}
+
+                <!-- Horizontales (Supervivencia/Multiplicadores) -->
+                <div>
+                    <h4 class="text-[10px] font-black tracking-widest text-[#facc15] shadow-[#facc15] uppercase mb-6 flex items-center gap-2 border-b border-[var(--border-color)] pb-2">
+                        Horizontales (Multiplicadores) <i class="ph-fill ph-lightning text-yellow-400"></i>
+                    </h4>
+                    
+                    {{ gui_skill_bar('Git & Control de Versiones', user.skill_git, 'git', False) }}
+                    {{ gui_skill_bar('Prompt Engineering (IA)', user.skill_ia, 'ia', False) }}
+                    {{ gui_skill_bar('Data Foundations (SQL)', user.skill_sql, 'sql', False) }}
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Sidebar (Ocupa 1/3): Status de Squad & Misión Activa -->
+        <section class="flex flex-col gap-6">
+            <div class="glass-panel p-6 flex flex-col rounded-2xl h-full border-t-[3px] border-t-[var(--secondary-color)]">
+                <h3 class="text-lg font-bold flex items-center gap-2 mb-6 text-[var(--text-header)]">
+                    <i class="ph-fill ph-crosshair text-[var(--secondary-color)]"></i> Panel Operativo
+                </h3>
+                
+                <!-- Misión Activa Box -->
+                <div class="bg-[var(--card-bg)]/50 border border-[var(--secondary-color)]/30 rounded-xl p-5 mb-8 flex-1 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 opacity-5">
+                        <i class="ph-fill ph-target text-8xl text-[var(--text-header)]"></i>
+                    </div>
+                    <h4 class="font-bold text-[var(--text-header)] mb-2 flex items-center gap-2 relative z-10"><div class="w-1.5 h-1.5 rounded-full bg-[var(--accent-color)] animate-ping"></div> Misión Activa</h4>
+                    <p class="text-[13px] text-[var(--text-muted)] mb-5 leading-relaxed relative z-10">
+                        Demuestra que tu estación de trabajo está lista. Configura tu entorno y supera el Test Diagnóstico sin bloqueos de tiempo.
+                    </p>
+                    <a href="{{ url_for('diagnostic') }}" class="block text-center w-full py-2.5 bg-[var(--accent-color)]/20 border border-[var(--accent-color)] text-[var(--accent-color)] hover:bg-[var(--accent-color)] hover:text-[var(--bg-color)] font-bold rounded-lg transition-all duration-300 relative z-10 uppercase text-xs tracking-widest">
+                        Continuar
+                    </a>
+                </div>
+
+                <!-- Squad Status -->
+                <div>
+                    <h4 class="text-[10px] font-black tracking-widest text-[var(--text-muted)] uppercase mb-3 text-center">Estado del Squad</h4>
+                    
+                    {% if user.group_id %}
+                    <div class="border border-green-500/30 bg-green-500/5 rounded-lg p-5 text-center shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+                        <i class="ph-fill ph-users-three text-3xl mb-2 text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]"></i>
+                        <p class="text-sm text-[var(--text-header)] font-bold">Squad #{{ user.group_id }}</p>
+                        <p class="text-xs mt-1 text-green-400">Enlazado y funcional.</p>
+                    </div>
+                    {% else %}
+                    <div class="border border-dashed border-[var(--border-color)] rounded-lg p-5 text-center text-[var(--text-muted)] bg-[var(--bg-color)]/30">
+                        <i class="ph-fill ph-user-minus text-3xl mb-2 opacity-50"></i>
+                        <p class="text-sm font-semibold text-[var(--text-header)]">Sin Squad (Lobo Solitario)</p>
+                        <p class="text-xs mt-1">Completa Módulo 1 para Matchmaking automático.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>
 
-<!-- Modal de Rol (Dinámico) -->
-<div id="roleModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <div class="modal-glass w-full max-w-lg rounded-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-        <div class="p-6 border-b border-white/10 flex justify-between items-center">
-            <h3 id="modalTitle" class="text-2xl font-bold text-[var(--accent-color)]">Título del Rol</h3>
-            <button onclick="closeRoleModal()" class="text-gray-400 hover:text-white transition-colors">
-                <i class="fa-solid fa-xmark text-xl"></i>
+<!-- Modal de Rol -->
+<div id="roleModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-[var(--bg-color)]/80 backdrop-blur-md transition-opacity">
+    <div class="modal-glass w-full max-w-md rounded-2xl overflow-hidden shadow-[0_0_30px_var(--glow-effect)] border border-[var(--accent-color)]/50">
+        <div class="p-6 border-b border-[var(--border-color)] flex justify-between items-center bg-[var(--card-bg)]">
+            <h3 id="modalTitle" class="text-xl font-black text-[var(--accent-color)] tracking-tight uppercase">Rol</h3>
+            <button onclick="closeRoleModal()" class="text-gray-400 hover:text-[#ff0055] transition-colors">
+                <i class="ph-bold ph-x text-xl"></i>
             </button>
         </div>
-        <div class="p-6 space-y-6">
+        <div class="p-6 space-y-6 bg-[var(--bg-color)]">
             <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-muted mb-2">Descripción del Rol</h4>
-                <p id="modalDescription" class="text-[var(--text-main)] opacity-90 leading-relaxed"></p>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-2">Descripción Estratégica</h4>
+                <p id="modalDescription" class="text-[var(--text-main)] opacity-90 leading-relaxed text-[13px]"></p>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
-                <div class="p-3 rounded-xl bg-accent-soft border border-accent-soft">
-                    <h4 class="text-[10px] font-bold uppercase text-[var(--accent-color)] mb-1">XP Requerido</h4>
-                    <p id="modalXP" class="text-lg font-black text-[var(--text-header)]"></p>
+                <div class="p-4 rounded-xl bg-[var(--accent-color)]/5 border border-[var(--accent-color)]/20">
+                    <h4 class="text-[10px] font-bold uppercase text-[var(--accent-color)] mb-1">XP Base</h4>
+                    <p id="modalXP" class="text-lg font-mono font-black text-[var(--text-header)]"></p>
                 </div>
-                <div class="p-3 rounded-xl bg-secondary-soft border border-secondary-soft">
-                    <h4 class="text-[10px] font-bold uppercase text-[var(--secondary-color)] mb-1">Hito Clave</h4>
-                    <p id="modalMilestone" class="text-xs font-medium text-[var(--text-header)]"></p>
+                <div class="p-4 rounded-xl bg-[var(--secondary-color)]/5 border border-[var(--secondary-color)]/20">
+                    <h4 class="text-[10px] font-bold uppercase text-[var(--secondary-color)] mb-1">Objetivo</h4>
+                    <p id="modalMilestone" class="text-[11px] font-bold text-[var(--text-header)] mt-1.5 leading-tight"></p>
                 </div>
             </div>
 
-            <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-muted mb-3">Checklist de Maestría</h4>
-                <ul id="modalChecklist" class="space-y-2">
-                    <!-- Se llena dinámicamente -->
+            <div class="bg-[var(--card-bg)] p-4 rounded-lg border border-[var(--border-color)]">
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-3 flex items-center gap-1"><i class="ph-fill ph-list-checks"></i> Requisitos</h4>
+                <ul id="modalChecklist" class="space-y-3">
+                    <!-- Dinámico -->
                 </ul>
             </div>
-        </div>
-        <div class="p-4 bg-white/5 border-t border-white/10 text-center">
-            <button onclick="closeRoleModal()" class="px-6 py-2 rounded-full bg-gradient-to-r from-neonBlue/20 to-neonPurple/20 border border-white/10 text-sm font-bold hover:border-neonBlue/50 transition-all">
-                Entendido, Agente
-            </button>
         </div>
     </div>
 </div>
 
 <script>
-    const rolesInfo = {{ roles_info | tojson | safe }};
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            document.querySelectorAll('[data-width]').forEach(el => {
+                el.style.width = el.getAttribute('data-width') + '%';
+            });
+        }, 300); // 300ms fade/scale delay logic
+    });
+
+    const rolesInfo = {{ roles_info | default('{}') | safe }};
 
     function openRoleModal(roleKey) {
         const info = rolesInfo[roleKey];
         if (!info) return;
 
-        document.getElementById('modalTitle').innerText = info.title;
-        document.getElementById('modalDescription').innerText = info.description;
-        document.getElementById('modalXP').innerText = `${info.requirements.xp} XP`;
-        document.getElementById('modalMilestone').innerText = info.requirements.milestone;
+        document.getElementById('modalTitle').innerText = info.title || roleKey;
+        document.getElementById('modalDescription').innerText = info.description || "N/A";
+        document.getElementById('modalXP').innerText = info.requirements?.xp ? `${info.requirements.xp} XP` : '0 XP';
+        document.getElementById('modalMilestone').innerText = info.requirements?.milestone || "Progreso";
 
         const checklistUl = document.getElementById('modalChecklist');
         checklistUl.innerHTML = '';
-        info.checklist.forEach(item => {
+        (info.checklist || []).forEach(item => {
             const li = document.createElement('li');
-            li.className = 'flex items-center gap-3 text-sm text-gray-300';
-            li.innerHTML = `<i class="fa-solid fa-square-check text-neonBlue/60"></i> <span>${item}</span>`;
+            li.className = 'flex items-start gap-3 text-[13px] text-[var(--text-main)] leading-snug';
+            li.innerHTML = `<i class="ph-fill ph-check-circle text-[var(--secondary-color)] mt-0.5 shrink-0"></i> <span>${item}</span>`;
             checklistUl.appendChild(li);
         });
 
-        document.getElementById('roleModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        const m = document.getElementById('roleModal');
+        m.classList.remove('hidden');
     }
 
     function closeRoleModal() {
         document.getElementById('roleModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
     }
 
     window.onclick = function(event) {
         const modal = document.getElementById('roleModal');
-        if (event.target == modal) {
-            closeRoleModal();
-        }
+        if (event.target == modal) closeRoleModal();
     };
 </script>
 {% endblock %}

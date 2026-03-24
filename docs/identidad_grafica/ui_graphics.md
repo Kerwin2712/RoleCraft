@@ -54,7 +54,9 @@ El panel de información principal se divide y organiza para reducir la carga co
 - 🚀 **Cero Bloqueos Iniciales:** El acceso al **Test Diagnóstico** debe ser inmediato y sin restricciones (eliminar bloqueos temporales de 24h para el primer paso).
 - ⚡ **Feedback Inmediato:** Uso prioritario de **HTMX** para realizar validaciones en tiempo real (P. ej., el botón "Unirse" valida los *skills* del aprendiz sin necesidad de recargar la página entera).
 - 🏷️ **Jerarquía de Texto Clara:** Los títulos deben ser grandes y contundentes usando `--text-header`; en contraposición, todas las descripciones secundarias y notas deben usar `--text-muted` para mitigar la fatiga visual de la lectura larga.
-- 👁️ **Accesibilidad Universal:** Cumplimiento de contraste mínimo WCAG de **4.5:1** en tipografías, aplicable rigurosamente incluso en los temas visuales claros ("*Light*").
+- 👁️ **Accesibilidad Universal y Light Mode (Contraste Invertido):** 
+  - Cumplimiento de contraste mínimo WCAG de **4.5:1** en tipografías, aplicable rigurosamente incluso en los temas visuales claros ("*Light*").
+  - **Prohibido el uso de colores estáticos (Ej: `bg-black/40`, `text-white`, `border-white/10`) en contenedores base.** En lugar de eso, todo debe usar el sistema de variables CSS dinámicas: `bg-[var(--card-bg)]`, `text-[var(--text-main)]`, y `border-[var(--border-color)]` para asegurar legibilidad instantánea sin importar si el fondo muta a claro u oscuro.
 
 ---
 

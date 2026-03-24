@@ -3,6 +3,7 @@
 ## 24 de Marzo de 2026 - Actualización de Portafolio e Identidad Visual
 - **docs**: Rediseño completo del `README.md` estructurándolo profesionalmente para uso como portafolio en GitHub (Arquitectura, Features, Instalación).
 - **docs**: Creación y formateo del Manual de Identidad Visual y UX (`ui_graphics.md`), definiendo la estética Neo-Cyberpunk, componentes clave y reglas de UX.
+- **feat/ui**: Rediseño inmersivo completo de  `dashboard_aprendiz.html` implementando la arquitectura visual descrita en el manual. Se reemplazaron colores fijos oscuros por variables modulares que respetan el contraste en el modo claro. Se añadió la Terminal Interactiva HTMX de asignación de roles y la barra superior de status.
 
 ## 20 de Marzo de 2026 - Rediseño del Módulo 1 y Filtro de Entorno
 - **feat**: Implementación del Módulo 1 como "Misión de Configuración de Entorno" (VSCode, Python, Antigravity).
